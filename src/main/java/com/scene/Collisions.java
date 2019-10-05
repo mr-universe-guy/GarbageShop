@@ -52,4 +52,13 @@ public class Collisions {
     public static boolean pointInBox(Vector2f point, Vector2f boxMin, Vector2f boxMax){
         return point.x > boxMin.x && point.x < boxMax.x && point.y > boxMin.y && point.y < boxMax.y;
     }
+    
+    public static boolean pointInRotatedBox(Vector2f point, Vector2f boxMin, Vector2f boxSize, float rotation){
+        //first get our point into local box-space
+        Vector2f boxExtents = boxSize.mult(0.5f);
+        Vector2f localPoint = point.subtract(boxMin);
+        localPoint.rotateAroundOrigin(rotation, true);
+        //now do a regular box check
+        return pointInBox(localPoint, boxExtents.negate(), boxExtents);
+    }
 }

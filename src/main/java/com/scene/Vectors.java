@@ -18,6 +18,10 @@ public class Vectors {
         return new Vector3f(v.x, v.y, 0);
     }
     
+    public static Vector2f vec3ToVec2(Vector3f v){
+        return new Vector2f(v.x, v.y);
+    }
+    
     public static Vector2f rotateVector(Vector2f vec, float rads){
         float cos = FastMath.cos(rads);
         float sin = FastMath.sin(rads);

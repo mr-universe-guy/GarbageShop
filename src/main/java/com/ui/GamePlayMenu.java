@@ -7,6 +7,8 @@ package com.ui;
 
 import com.GarbageShopApp;
 import com.TimeListener;
+import com.jme3.input.InputManager;
+import com.jme3.math.Vector2f;
 import com.jme3.scene.Node;
 import com.mrugames.menumonkey.BaseMenu;
 import com.mrugames.menumonkey.MenuDirectorState;
@@ -21,7 +23,8 @@ import com.simsilica.lemur.Label;
  * @author matt
  */
 public class GamePlayMenu extends BaseMenu implements TimeListener{
-    private Label cashLabel, clockLabel;
+    private final Label cashLabel, clockLabel, cursorLabel;
+    private InputManager im;
 
     public GamePlayMenu() {
         Node node = getMenuNode();
@@ -35,6 +38,11 @@ public class GamePlayMenu extends BaseMenu implements TimeListener{
         clockLabel = new Label("00:00");
         clockLabel.setTextHAlignment(HAlignment.Center);
         node.attachChild(clockLabel);
+        
+        cursorLabel = new Label("");
+        cursorLabel.setMaxWidth(150);
+        cursorLabel.setTextHAlignment(HAlignment.Center);
+        node.attachChild(cursorLabel);
     }
 
     @Override
@@ -45,6 +53,7 @@ public class GamePlayMenu extends BaseMenu implements TimeListener{
         GarbageShopApp app = (GarbageShopApp)director.getApplication();
         setHour(app.curHour);
         app.addTimeListener(this);
+        im = app.getInputManager();
     }
 
     @Override
@@ -56,5 +65,15 @@ public class GamePlayMenu extends BaseMenu implements TimeListener{
     public void setHour(int hour) {
         clockLabel.setText(String.format("%02d:00", hour));
     }
+
+    @Override
+    public void update(float tpf) {
+        //set cursor label to directly under the cursor, centered
+        Vector2f cursorPos = im.getCursorPosition();
+        cursorLabel.setLocalTranslation(cursorPos.x-75, cursorPos.y-20, 0);
+    }
     
+    public void setCursorText(String text){
+        cursorLabel.setText(text);
+    }
 }

@@ -6,6 +6,7 @@
 package com.ui;
 
 import com.jme3.input.KeyInput;
+import com.jme3.input.MouseInput;
 import com.simsilica.lemur.input.FunctionId;
 import com.simsilica.lemur.input.InputMapper;
 import com.simsilica.lemur.input.InputState;
@@ -27,7 +28,7 @@ public class Inputs {
         im.map(MOVE_Y, InputState.Negative, KeyInput.KEY_S);
         im.map(MOVE_X, InputState.Positive, KeyInput.KEY_D);
         im.map(MOVE_X, InputState.Negative, KeyInput.KEY_A);
-        im.map(INTERACT, KeyInput.KEY_SPACE);
+        im.map(INTERACT, MouseInput.BUTTON_LEFT);
         im.map(INVENTORY, KeyInput.KEY_TAB);
     }
 }
