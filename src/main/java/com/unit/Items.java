@@ -17,6 +17,6 @@ public class Items {
     
     static{
         //fill map here
-        ITEMMAP.put("Battery", new Item("Battery", 1,1,"models/battery.gltf","robot,small,power,trash"));
+        ITEMMAP.put("Battery", new Item("Battery", 1,1,1,3,"models/battery.gltf","robot,small,power,trash"));
     }
 }

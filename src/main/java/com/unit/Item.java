@@ -12,15 +12,17 @@ package com.unit;
  */
 public class Item {
     private String itemName;
-    private int width;
-    private int height;
+    private int width, height, minValue, maxValue;
     private String assetPath;
     private String tags;
 
-    public Item(String itemName, int width, int height, String assetPath, String tags) {
+    public Item(String itemName, int width, int height, int minValue,
+            int maxValue, String assetPath, String tags) {
         this.itemName = itemName;
         this.width = width;
         this.height = height;
+        this.minValue = minValue;
+        this.maxValue = maxValue;
         this.assetPath = assetPath;
         this.tags = tags;
     }
@@ -35,6 +37,14 @@ public class Item {
 
     public int getHeight() {
         return height;
+    }
+
+    public int getMinValue() {
+        return minValue;
+    }
+
+    public int getMaxValue() {
+        return maxValue;
     }
 
     public String getAssetPath() {
