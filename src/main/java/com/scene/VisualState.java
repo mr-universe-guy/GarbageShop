@@ -10,7 +10,10 @@ import com.entity.DataState;
 import com.jme3.app.Application;
 import com.jme3.app.state.BaseAppState;
 import com.jme3.asset.AssetManager;
+import com.jme3.material.Material;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector2f;
+import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.simsilica.es.Entity;
@@ -31,11 +34,13 @@ public class VisualState extends BaseAppState{
     private EntityData ed;
     private AssetManager am;
     private EntitySet assets;
+    private Material mat;
 
     @Override
     protected void initialize(Application aplctn) {
         ed = getState(DataState.class).getEd();
         am = aplctn.getAssetManager();
+        mat = new Material(am, "Common/MatDefs/Misc/Unshaded.j3md");
     }
 
     @Override
@@ -66,7 +71,8 @@ public class VisualState extends BaseAppState{
                 loadAsset(e);
             }
             for(Entity e : assets.getChangedEntities()){
-                translateAsset(e.getId(), e.get(PositionComponent.class).getPosition());
+                PositionComponent posC = e.get(PositionComponent.class);
+                translateAsset(e.getId(), posC.getPosition(), posC.getRotation());
             }
         }
     }
@@ -79,17 +85,24 @@ public class VisualState extends BaseAppState{
     private void loadAsset(Entity e){
         EntityId id = e.getId();
         String asset = e.get(VisualComponent.class).getVisualAsset();
-        Vector2f position = e.get(PositionComponent.class).getPosition();
+        PositionComponent posC = e.get(PositionComponent.class);
+        Vector2f position = posC.getPosition();
+        float rot = posC.getRotation();
         Spatial spat = am.loadModel(asset);
         assetMap.put(id, spat);
-        translateAsset(spat, position);
+        //for now we're applying a temp material
+        spat.setMaterial(mat);
+        visualNode.attachChild(spat);
+        translateAsset(spat, position, rot);
     }
     
-    private void translateAsset(EntityId id, Vector2f position){
-        translateAsset(assetMap.get(id), position);
+    private void translateAsset(EntityId id, Vector2f position, float rot){
+        translateAsset(assetMap.get(id), position, rot);
     }
     
-    private void translateAsset(Spatial spat, Vector2f position){
+    private void translateAsset(Spatial spat, Vector2f position, float rotation){
         spat.setLocalTranslation(Vectors.vec2ToVec3(position));
+        Quaternion rot = new Quaternion().fromAngleAxis(rotation, Vector3f.UNIT_Z);
+        spat.setLocalRotation(rot);
     }
 }
