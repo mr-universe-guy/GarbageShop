@@ -13,6 +13,7 @@ import com.simsilica.es.EntityData;
 import com.simsilica.es.EntityId;
 import com.simsilica.lemur.GuiGlobals;
 import com.simsilica.lemur.input.InputMapper;
+import com.ui.CameraState;
 import com.ui.Inputs;
 import com.ui.PlayerInputState;
 import com.unit.DriverComponent;
@@ -48,7 +49,8 @@ public class GarbageShopApp extends SimpleApplication{
                 new MapState(),
                 new MobState(),
                 new CollisionDebugState(),
-                new PlayerInputState()
+                new PlayerInputState(),
+                new CameraState()
         );
         //temp
         inputManager.setCursorVisible(false);
