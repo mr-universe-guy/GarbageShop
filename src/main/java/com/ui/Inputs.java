@@ -19,6 +19,7 @@ public class Inputs {
     public static final FunctionId MOVE_Y = new FunctionId(PLAYERGROUP, "Y_MOVEMENT");
     public static final FunctionId MOVE_X = new FunctionId(PLAYERGROUP, "X_MOVEMENT");
     public static final FunctionId INTERACT = new FunctionId(PLAYERGROUP, "INTERACT");
+    public static final FunctionId INVENTORY = new FunctionId(PLAYERGROUP, "OPEN_INVENTORY");
     
     public static void registerDefaultInput(InputMapper im){
         im.activateGroup(PLAYERGROUP);
@@ -27,5 +28,6 @@ public class Inputs {
         im.map(MOVE_X, InputState.Positive, KeyInput.KEY_D);
         im.map(MOVE_X, InputState.Negative, KeyInput.KEY_A);
         im.map(INTERACT, KeyInput.KEY_SPACE);
+        im.map(INVENTORY, KeyInput.KEY_TAB);
     }
 }

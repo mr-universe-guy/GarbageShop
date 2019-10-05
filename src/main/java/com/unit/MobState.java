@@ -60,7 +60,7 @@ public class MobState extends BaseAppState{
                 Vector2f nextPos = position.add(driver.mult(speed));
                 //check this position against the map to make sure we can walk here
                 if(!map.collides(nextPos, radius)){
-                    ed.setComponent(e.getId(), new PositionComponent(nextPos));
+                    ed.setComponent(e.getId(), new PositionComponent(nextPos,0));
                 }
             }
         }

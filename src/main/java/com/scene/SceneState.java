@@ -32,6 +32,7 @@ public class SceneState extends BaseAppState{
         map.addGridObject(new StaticGridObject(new Coordinate(0,12), new Coordinate(24,8)));
         map.addGridObject(new StaticGridObject(new Coordinate(6,0), new Coordinate(10,2)));
         map.addGridObject(new StaticGridObject(new Coordinate(16,0), new Coordinate(8,10)));
+        map.setAlleyArea(new Coordinate(3,10), new Coordinate(23,12));
         //build map visuals
         AssetManager am = app.getAssetManager();
         Spatial dumpster = am.loadModel("models/dumpster.gltf");

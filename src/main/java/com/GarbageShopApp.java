@@ -14,12 +14,17 @@ import com.scene.VisualState;
 import com.simsilica.es.EntityData;
 import com.simsilica.es.EntityId;
 import com.simsilica.lemur.GuiGlobals;
+import com.simsilica.lemur.anim.AbstractTween;
+import com.simsilica.lemur.anim.AnimationState;
+import com.simsilica.lemur.anim.Tween;
+import com.simsilica.lemur.anim.Tweens;
 import com.simsilica.lemur.input.InputMapper;
 import com.ui.CameraState;
 import com.ui.GamePlayMenu;
 import com.ui.Inputs;
 import com.ui.PlayerInputState;
 import com.unit.DriverComponent;
+import com.unit.ItemState;
 import com.unit.MobComponent;
 import com.unit.MobState;
 import com.unit.PositionComponent;
@@ -32,12 +37,15 @@ import java.util.List;
  */
 public class GarbageShopApp extends SimpleApplication{
     public static final String GAME_UI_MENU = "Game_UI";
-    private final List<TimeListener> timers = new ArrayList<>();
+    private final List<TimeListener> timeListeners = new ArrayList<>();
+    private final List<DayListener> dayListeners = new ArrayList<>();
     private InputMapper inputMapper;
     private EntityId playerId;
     private final float hourDuration = (24f)/(5f);
+    private final int wakeupTime = 6;
+    private final int closeTime = 22;
     private float hourProgress = 0f;
-    public int curHour = 6;
+    public int curHour = wakeupTime;
     public int curDay = 0;
 
     @Override
@@ -58,17 +66,30 @@ public class GarbageShopApp extends SimpleApplication{
         menus.setNextMenu(GAME_UI_MENU);
         
         //attach everything else
-        stateManager.attachAll(new SceneState(),
+        AnimationState anim = new AnimationState();
+        stateManager.attachAll(
+                anim,
+                new SceneState(),
                 new VisualState(),
                 new MobState(),
+                new ItemState(),
                 new CollisionDebugState(),
                 new PlayerInputState(),
                 new CameraState(),
                 menus
         );
-        //temp
-        inputManager.setCursorVisible(false);
-        //
+        //finally start a new day!
+        Tween checkStates = new AbstractTween(0){
+            @Override
+            protected void doInterpolate(double d) {
+                if(!menus.isEnabled()){
+                    anim.add(Tweens.delay(0), this);
+                } else{
+                    sleep();
+                }
+            }
+        };
+        anim.add(Tweens.delay(0), checkStates);
     }
 
     @Override
@@ -82,7 +103,7 @@ public class GarbageShopApp extends SimpleApplication{
         ed.setComponents(playerId,
                 new MobComponent(1f,0.3f),
                 new DriverComponent(0f,0f),
-                new PositionComponent(3f,11f)
+                new PositionComponent(3f,11f,0)
         );
     }
 
@@ -96,24 +117,34 @@ public class GarbageShopApp extends SimpleApplication{
 
     private void setHour(int hour) {
         hourProgress = 0;
-        if(curHour > 22) return;//day ends at 10pm, time "stops" and player can dick around
-        for(TimeListener timer : timers){
+        if(hour > closeTime) return;//day ends at 10pm, time "stops" and player can dick around
+        curHour = hour;
+        for(TimeListener timer : timeListeners){
             timer.setHour(curHour);
         }
     }
     
     private void sleep(){
-        curHour = 0;
-        for(TimeListener timer : timers){
-            timer.setHour(0);
+        //TODO: fade to black first
+        for(DayListener listener : dayListeners){
+            listener.nextDay();
         }
+        setHour(wakeupTime);
     }
     
     public void addTimeListener(TimeListener timer){
-        timers.add(timer);
+        timeListeners.add(timer);
     }
     
     public void removeTimeListener(TimeListener timer){
-        timers.remove(timer);
+        timeListeners.remove(timer);
+    }
+    
+    public void addDayListener(DayListener listener){
+        dayListeners.add(listener);
+    }
+    
+    public void removeDayListener(DayListener listener){
+        dayListeners.remove(listener);
     }
 }

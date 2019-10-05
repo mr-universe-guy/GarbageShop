@@ -48,4 +48,8 @@ public class Collisions {
         Vector2f clamped = clampOnRectangle(circlePos, rMin, rMax);
         return (radius*radius > clamped.distanceSquared(circlePos));
     }
+    
+    public static boolean pointInBox(Vector2f point, Vector2f boxMin, Vector2f boxMax){
+        return point.x > boxMin.x && point.x < boxMax.x && point.y > boxMin.y && point.y < boxMax.y;
+    }
 }

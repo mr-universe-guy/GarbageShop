@@ -10,7 +10,7 @@ package com.scene;
  * @author matt
  */
 public class Coordinate {
-    int x, y;
+    public int x, y;
 
     public Coordinate(int x, int y) {
         this.x = x;

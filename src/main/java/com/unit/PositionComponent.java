@@ -14,16 +14,22 @@ import com.simsilica.es.EntityComponent;
  */
 public class PositionComponent implements EntityComponent{
     private final Vector2f position;
+    private final float rotation;
     
-    public PositionComponent(float x, float y){
-        this(new Vector2f(x,y));
+    public PositionComponent(float x, float y, float rotation){
+        this(new Vector2f(x,y), rotation);
     }
 
-    public PositionComponent(Vector2f position) {
+    public PositionComponent(Vector2f position, float rotation) {
         this.position = position;
+        this.rotation = rotation;
     }
 
     public Vector2f getPosition() {
         return position;
+    }
+    
+    public float getRotation(){
+        return rotation;
     }
 }

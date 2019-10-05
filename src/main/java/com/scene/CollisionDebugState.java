@@ -21,6 +21,9 @@ import com.jme3.util.BufferUtils;
 import com.simsilica.es.Entity;
 import com.simsilica.es.EntityData;
 import com.simsilica.es.EntitySet;
+import com.unit.Item;
+import com.unit.ItemComponent;
+import com.unit.Items;
 import com.unit.MobComponent;
 import com.unit.PositionComponent;
 import java.util.ArrayList;
@@ -34,9 +37,10 @@ import java.util.List;
 public class CollisionDebugState extends BaseAppState{
     private final Geometry mapCollisions = new Geometry("Map_Collision_Debug");
     private final Geometry mobCollisions = new Geometry("Mob_Collision_Debug");
+    private final Geometry itemCollisions = new Geometry("Item_Collision_Debug");
     private SceneState mapState;
     private EntityData ed;
-    private EntitySet mobs;
+    private EntitySet mobs, items;
 
     @Override
     protected void initialize(Application aplctn) {
@@ -53,6 +57,11 @@ public class CollisionDebugState extends BaseAppState{
         mobMesh.setMode(Mesh.Mode.Lines);
         mobCollisions.setMesh(mobMesh);
         mobCollisions.setMaterial(colMat);
+        //item
+        Mesh itemMesh = new Mesh();
+        itemMesh.setMode(Mesh.Mode.Lines);
+        itemCollisions.setMesh(itemMesh);
+        itemCollisions.setMaterial(colMat);
     }
 
     @Override
@@ -63,12 +72,15 @@ public class CollisionDebugState extends BaseAppState{
     @Override
     protected void onEnable() {
         mobs = ed.getEntities(MobComponent.class, PositionComponent.class);
+        items = ed.getEntities(ItemComponent.class, PositionComponent.class);
         Node rootNode = ((GarbageShopApp)getApplication()).getRootNode();
         rootNode.attachChild(mapCollisions);
         rootNode.attachChild(mobCollisions);
+        rootNode.attachChild(itemCollisions);
         getApplication().enqueue(() -> {
             updateMap();
             updateMobs();
+            updateItems();
         });
     }
 
@@ -76,7 +88,9 @@ public class CollisionDebugState extends BaseAppState{
     protected void onDisable() {
         mapCollisions.removeFromParent();
         mobCollisions.removeFromParent();
+        itemCollisions.removeFromParent();
         mobs.release();
+        items.release();
     }
 
     @Override
@@ -84,6 +98,32 @@ public class CollisionDebugState extends BaseAppState{
         if(mobs.applyChanges()){
             updateMobs();
         }
+        if(items.applyChanges()){
+            updateItems();
+        }
+    }
+    
+    private void updateItems(){
+        List<Vector3f> vertList = new ArrayList<>();
+        List<Integer> indiceList = new ArrayList<>();
+        for(Entity e : items){
+            PositionComponent posC = e.get(PositionComponent.class);
+            Vector2f pos = posC.getPosition();
+            float rot = posC.getRotation();
+            Item item = Items.ITEMMAP.get(e.get(ItemComponent.class).getItemKey());
+            drawItem(pos, rot, item.getWidth(), item.getHeight(), vertList, indiceList);
+        }
+        Mesh m = itemCollisions.getMesh();
+        m.setBuffer(VertexBuffer.Type.Position, 3,
+                BufferUtils.createFloatBuffer(vertList.toArray(new Vector3f[vertList.size()])));
+        int[] indices = new int[indiceList.size()];
+        int x=0;
+        for(Integer i : indiceList){
+            indices[x] = i;
+            x++;
+        }
+        m.setBuffer(VertexBuffer.Type.Index, 2, indices);
+        itemCollisions.updateModelBound();
     }
     
     private void updateMobs(){
@@ -134,6 +174,32 @@ public class CollisionDebugState extends BaseAppState{
         }
         m.setBuffer(VertexBuffer.Type.Index, 2, BufferUtils.createIntBuffer(indices));
         mapCollisions.updateModelBound();
+    }
+    
+    private void drawItem(Vector2f pos, float rot, int sizeX, int sizeY,
+            List<Vector3f> vertList, List<Integer> indiceList){
+        Vector2f v0 = new Vector2f((-sizeX/2f)*0.1f, (-sizeY/2f)*0.1f);
+        Vector2f v3 = new Vector2f((sizeX/2f)*0.1f, (sizeY/2f)*0.1f);
+        Vector2f v1 = new Vector2f(v0.x, v3.y);
+        Vector2f v2 = new Vector2f(v3.x, v0.y);
+        v0.rotateAroundOrigin(rot, false);
+        v1.rotateAroundOrigin(rot, false);
+        v2.rotateAroundOrigin(rot, false);
+        v3.rotateAroundOrigin(rot, false);
+        int i=vertList.size();
+        vertList.add(Vectors.vec2ToVec3(pos.add(v0)));//0
+        vertList.add(Vectors.vec2ToVec3(pos.add(v1)));//1
+        vertList.add(Vectors.vec2ToVec3(pos.add(v2)));//2
+        vertList.add(Vectors.vec2ToVec3(pos.add(v3)));//3
+        int[] indices = new int[]{
+            i+0, i+1,
+            i+0, i+2,
+            i+1, i+3,
+            i+2, i+3
+        };
+        for(int indice : indices){
+            indiceList.add(indice);
+        }
     }
     
     private void drawCircle(Vector3f pos, float radius, List<Vector3f> vertList, List<Integer> indiceList){

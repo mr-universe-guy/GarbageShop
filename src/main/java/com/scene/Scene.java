@@ -15,6 +15,7 @@ import java.util.List;
  */
 public class Scene {
     private final List<GridObject> gridObjects = new ArrayList<>();
+    private Coordinate alleyMin, alleyMax;
     
     public boolean addGridObject(GridObject object){
         return gridObjects.add(object);
@@ -37,5 +38,18 @@ public class Scene {
             }
         }
         return false;
+    }
+    
+    public void setAlleyArea(Coordinate min, Coordinate max){
+        alleyMin = min;
+        alleyMax = max;
+    }
+
+    public Coordinate getAlleyMin() {
+        return alleyMin;
+    }
+
+    public Coordinate getAlleyMax() {
+        return alleyMax;
     }
 }
