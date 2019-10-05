@@ -13,7 +13,7 @@ import java.util.List;
  *
  * @author matt
  */
-public class Map {
+public class Scene {
     private final List<GridObject> gridObjects = new ArrayList<>();
     
     public boolean addGridObject(GridObject object){

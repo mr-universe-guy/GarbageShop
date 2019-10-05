@@ -9,8 +9,8 @@ import com.entity.DataState;
 import com.jme3.app.Application;
 import com.jme3.app.state.BaseAppState;
 import com.jme3.math.Vector2f;
-import com.scene.Map;
-import com.scene.MapState;
+import com.scene.Scene;
+import com.scene.SceneState;
 import com.simsilica.es.Entity;
 import com.simsilica.es.EntityData;
 import com.simsilica.es.EntitySet;
@@ -20,13 +20,13 @@ import com.simsilica.es.EntitySet;
  * @author matt
  */
 public class MobState extends BaseAppState{
-    private MapState mapState;
+    private SceneState mapState;
     private EntityData ed;
     private EntitySet mobs;
 
     @Override
     protected void initialize(Application aplctn) {
-        mapState = getState(MapState.class);
+        mapState = getState(SceneState.class);
         ed = getState(DataState.class).getEd();
     }
 
@@ -49,7 +49,7 @@ public class MobState extends BaseAppState{
     public void update(float tpf) {
         mobs.applyChanges();
         //look at all mobs who's driver is currently > 0
-        Map map = mapState.getMap();
+        Scene map = mapState.getMap();
         for(Entity e : mobs){
             Vector2f driver = e.get(DriverComponent.class).getMovement();
             if(driver.lengthSquared() > 0.01f){

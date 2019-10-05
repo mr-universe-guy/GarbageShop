@@ -18,14 +18,14 @@ import com.jme3.scene.Spatial;
  * The world is a grid, and the players shop area is a much smaller grid
  * @author matt
  */
-public class MapState extends BaseAppState{
-    private Map map;
-    private Node mapNode = new Node("Map_Objects");
+public class SceneState extends BaseAppState{
+    private Scene map;
+    private final Node mapNode = new Node("Map_Objects");
 
     @Override
     protected void initialize(Application aplctn) {
         GarbageShopApp app = (GarbageShopApp)aplctn;
-        map = new Map();
+        map = new Scene();
         //build collision objects
         map.addGridObject(new StaticGridObject(new Coordinate(0,0), new Coordinate(6,10)));
         map.addGridObject(new StaticGridObject(new Coordinate(0,10), new Coordinate(1,2)));
@@ -58,7 +58,7 @@ public class MapState extends BaseAppState{
         
     }
 
-    public Map getMap() {
+    public Scene getMap() {
         return map;
     }
 }

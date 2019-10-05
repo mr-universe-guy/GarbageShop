@@ -14,7 +14,7 @@ import com.jme3.math.Vector3f;
  * @author matt
  */
 public class Vectors {
-    public static Vector3f fromVector2f(Vector2f v){
+    public static Vector3f vec2ToVec3(Vector2f v){
         return new Vector3f(v.x, v.y, 0);
     }
     

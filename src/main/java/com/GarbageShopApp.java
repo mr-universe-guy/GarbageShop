@@ -8,7 +8,8 @@ package com;
 import com.entity.DataState;
 import com.jme3.app.SimpleApplication;
 import com.scene.CollisionDebugState;
-import com.scene.MapState;
+import com.scene.SceneState;
+import com.scene.VisualState;
 import com.simsilica.es.EntityData;
 import com.simsilica.es.EntityId;
 import com.simsilica.lemur.GuiGlobals;
@@ -45,8 +46,8 @@ public class GarbageShopApp extends SimpleApplication{
 //        MenuDirectorState menus = new MenuDirectorState();
         
         //attach everything else
-        stateManager.attachAll(
-                new MapState(),
+        stateManager.attachAll(new SceneState(),
+                new VisualState(),
                 new MobState(),
                 new CollisionDebugState(),
                 new PlayerInputState(),

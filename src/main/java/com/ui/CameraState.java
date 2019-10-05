@@ -64,7 +64,7 @@ public class CameraState extends BaseAppState{
     }
     
     private void centerCameraOnPosition(Vector2f worldPosition){
-        Vector3f targetPos = Vectors.fromVector2f(worldPosition);
+        Vector3f targetPos = Vectors.vec2ToVec3(worldPosition);
         targetPos.z = zoom;
         cam.setLocation(targetPos);
     }

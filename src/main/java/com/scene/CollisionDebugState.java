@@ -34,13 +34,13 @@ import java.util.List;
 public class CollisionDebugState extends BaseAppState{
     private final Geometry mapCollisions = new Geometry("Map_Collision_Debug");
     private final Geometry mobCollisions = new Geometry("Mob_Collision_Debug");
-    private MapState mapState;
+    private SceneState mapState;
     private EntityData ed;
     private EntitySet mobs;
 
     @Override
     protected void initialize(Application aplctn) {
-        mapState = getState(MapState.class);
+        mapState = getState(SceneState.class);
         ed = getState(DataState.class).getEd();
         Material colMat = new Material(aplctn.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         //create empty mesh, add material
@@ -90,7 +90,7 @@ public class CollisionDebugState extends BaseAppState{
         List<Vector3f> vertList = new ArrayList<>();
         List<Integer> indiceList = new ArrayList<>();
         for(Entity e : mobs){
-            Vector3f pos = Vectors.fromVector2f(e.get(PositionComponent.class).getPosition());
+            Vector3f pos = Vectors.vec2ToVec3(e.get(PositionComponent.class).getPosition());
             float radius = e.get(MobComponent.class).getRadius();
             drawCircle(pos, radius, vertList, indiceList);
         }
@@ -143,7 +143,7 @@ public class CollisionDebugState extends BaseAppState{
         int c = vertList.size();
         for(int x=0; x<res; x++){
             float percent = (float)x/(float)res;
-            Vector3f px = Vectors.fromVector2f(Vectors.rotateVector(circlePoint, FastMath.TWO_PI*percent));
+            Vector3f px = Vectors.vec2ToVec3(Vectors.rotateVector(circlePoint, FastMath.TWO_PI*percent));
             vertList.add(pos.add(px));
         }
         indiceList.add(c+res-1);
