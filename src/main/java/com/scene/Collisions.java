@@ -5,6 +5,9 @@
  */
 package com.scene;
 
+import com.jme3.math.FastMath;
+import com.jme3.math.Vector2f;
+
 /**
  *
  * @author matt
@@ -32,5 +35,17 @@ public class Collisions {
      */
     public static boolean isOverlap(float aMin, float aMax, float bMin, float bMax){
         return bMin <= aMax && aMin <= bMax;
+    }
+    
+    public static Vector2f clampOnRectangle(Vector2f point, Vector2f rMin, Vector2f rMax){
+        Vector2f clamp = new Vector2f();
+        clamp.x = FastMath.clamp(point.x, rMin.x, rMax.x);
+        clamp.y = FastMath.clamp(point.y, rMin.y, rMax.y);
+        return clamp;
+    }
+    
+    public static boolean circleCollidesRectangle(Vector2f circlePos, float radius, Vector2f rMin, Vector2f rMax){
+        Vector2f clamped = clampOnRectangle(circlePos, rMin, rMax);
+        return (radius*radius > clamped.distanceSquared(circlePos));
     }
 }

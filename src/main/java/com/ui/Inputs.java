@@ -20,7 +20,8 @@ public class Inputs {
     public static final FunctionId MOVE_X = new FunctionId(PLAYERGROUP, "X_MOVEMENT");
     public static final FunctionId INTERACT = new FunctionId(PLAYERGROUP, "INTERACT");
     
-    public void registerDefaultInput(InputMapper im){
+    public static void registerDefaultInput(InputMapper im){
+        im.activateGroup(PLAYERGROUP);
         im.map(MOVE_Y, InputState.Positive, KeyInput.KEY_W);
         im.map(MOVE_Y, InputState.Negative, KeyInput.KEY_S);
         im.map(MOVE_X, InputState.Positive, KeyInput.KEY_D);

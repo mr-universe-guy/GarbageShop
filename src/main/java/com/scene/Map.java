@@ -5,6 +5,7 @@
  */
 package com.scene;
 
+import com.jme3.math.Vector2f;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,5 +26,16 @@ public class Map {
 
     public List<GridObject> getGridObjects() {
         return gridObjects;
+    }
+    
+    public boolean collides(Vector2f circlePos, float circleRadius){
+        for(GridObject object : gridObjects){
+            Vector2f recMin = Vectors.fromCoordinate(object.getPosition());
+            Vector2f recMax = Vectors.fromCoordinate(object.getPosition().add(object.getSize()));
+            if(Collisions.circleCollidesRectangle(circlePos, circleRadius, recMin, recMax)){
+                return true;
+            }
+        }
+        return false;
     }
 }
