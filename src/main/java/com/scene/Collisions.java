@@ -13,7 +13,7 @@ import com.jme3.math.Vector2f;
  * @author matt
  */
 public class Collisions {
-    public static boolean collidesWith(GridObject a, GridObject b){
+    public static boolean gridObjectCollision(GridObject a, GridObject b){
         Coordinate aMin = a.getPosition();
         Coordinate aMax = aMin.add(a.getSize());
         
@@ -21,6 +21,12 @@ public class Collisions {
         Coordinate bMax = bMin.add(b.getSize());
         
         //check collisions
+        return isOverlap(aMin.x, aMax.x, bMin.x, bMax.x) &&
+                isOverlap(aMin.y, aMax.y, bMin.y, bMax.y);
+    }
+    
+    public static boolean boxBoxCollision(Coordinate aMin, Coordinate aMax,
+            Coordinate bMin, Coordinate bMax){
         return isOverlap(aMin.x, aMax.x, bMin.x, bMax.x) &&
                 isOverlap(aMin.y, aMax.y, bMin.y, bMax.y);
     }
@@ -51,6 +57,10 @@ public class Collisions {
     
     public static boolean pointInBox(Vector2f point, Vector2f boxMin, Vector2f boxMax){
         return point.x > boxMin.x && point.x < boxMax.x && point.y > boxMin.y && point.y < boxMax.y;
+    }
+    
+    public static boolean pointInBox(Coordinate point, Coordinate boxMin, Coordinate boxMax){
+        return point.x >= boxMin.x && point.x < boxMax.x && point.y >= boxMin.y && point.y < boxMax.y;
     }
     
     public static boolean pointInRotatedBox(Vector2f point, Vector2f boxMin, Vector2f boxSize, float rotation){

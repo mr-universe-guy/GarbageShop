@@ -22,8 +22,13 @@ import com.simsilica.lemur.input.InputMapper;
 import com.ui.CameraState;
 import com.ui.GamePlayMenu;
 import com.ui.Inputs;
+import com.ui.InventoryMenu;
+import com.ui.Menus;
 import com.ui.PlayerInputState;
 import com.unit.DriverComponent;
+import com.unit.HeldItemListener;
+import com.unit.Inventory;
+import com.unit.Item;
 import com.unit.ItemState;
 import com.unit.MobComponent;
 import com.unit.MobState;
@@ -36,11 +41,13 @@ import java.util.List;
  * @author matt
  */
 public class GarbageShopApp extends SimpleApplication{
-    public static final String GAME_UI_MENU = "Game_UI";
     private final List<TimeListener> timeListeners = new ArrayList<>();
     private final List<DayListener> dayListeners = new ArrayList<>();
+    private final List<HeldItemListener> heldItemListeners = new ArrayList<>();
     private InputMapper inputMapper;
     private EntityId playerId;
+    private Inventory playerInventory;
+    private Item heldItem;
     private final float hourDuration = (24f)/(5f);
     private final int wakeupTime = 6;
     private final int closeTime = 22;
@@ -56,14 +63,16 @@ public class GarbageShopApp extends SimpleApplication{
         playerId = ed.createEntity();
         stateManager.attach(data);
         spawnPlayer(ed);
+        playerInventory = new Inventory();
         //prep ui
         GuiGlobals.initialize(this);
         GuiGlobals globals = GuiGlobals.getInstance();
         inputMapper = globals.getInputMapper();
         Inputs.registerDefaultInput(inputMapper);
         MenuDirectorState menus = new MenuDirectorState();
-        menus.registerMenu(GAME_UI_MENU, new GamePlayMenu());
-        menus.setNextMenu(GAME_UI_MENU);
+        menus.registerMenu(Menus.INVENTORY_UI_MENU, new InventoryMenu(playerInventory));
+        menus.registerMenu(Menus.GAME_UI_MENU, new GamePlayMenu());
+        menus.setNextMenu(Menus.GAME_UI_MENU);
         
         //attach everything else
         AnimationState anim = new AnimationState();
@@ -115,6 +124,21 @@ public class GarbageShopApp extends SimpleApplication{
         return playerId;
     }
 
+    public Inventory getPlayerInventory() {
+        return playerInventory;
+    }
+
+    public Item getHeldItem() {
+        return heldItem;
+    }
+
+    public void setHeldItem(Item heldItem) {
+        this.heldItem = heldItem;
+        for(HeldItemListener listener : heldItemListeners){
+            listener.itemHeld(heldItem);
+        }
+    }
+
     private void setHour(int hour) {
         hourProgress = 0;
         if(hour > closeTime) return;//day ends at 10pm, time "stops" and player can dick around
@@ -146,5 +170,13 @@ public class GarbageShopApp extends SimpleApplication{
     
     public void removeDayListener(DayListener listener){
         dayListeners.remove(listener);
+    }
+    
+    public void addHeldItemListener(HeldItemListener listener){
+        heldItemListeners.add(listener);
+    }
+    
+    public void removeHeldItemListener(HeldItemListener listener){
+        heldItemListeners.remove(listener);
     }
 }

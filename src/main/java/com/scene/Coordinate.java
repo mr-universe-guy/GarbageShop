@@ -40,4 +40,9 @@ public class Coordinate {
     public Coordinate add(int x, int y){
         return new Coordinate(this.x+x, this.y+y);
     }
+
+    @Override
+    public String toString() {
+        return "Coordinate{" + "x=" + x + ", y=" + y + '}';
+    }
 }
