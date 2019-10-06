@@ -26,6 +26,12 @@ public class DialogueState extends BaseAppState{
     private EntityData ed;
     private EntitySet conversations;
     private MenuDirectorState menus;
+    private final Action closeAction = new Action("leave"){
+        @Override
+        public void execute(Button button) {
+            closeConvo();ddd
+        }
+    };
 
     @Override
     protected void initialize(Application aplctn) {
@@ -40,7 +46,7 @@ public class DialogueState extends BaseAppState{
 
     @Override
     protected void onEnable() {
-        conversations = ed.getEntities(TradeComponent.class);
+        conversations = ed.getEntities(NameComponent.class, TradeComponent.class);
     }
 
     @Override
@@ -66,7 +72,12 @@ public class DialogueState extends BaseAppState{
             //they want us to buy from them
         } else{
             //we're trying to sell to them
+            startBuyerConvo(id);
         }
+    }
+    
+    private void closeConvo(){
+        menus.setNextMenu(Menus.GAME_UI_MENU);
     }
     
     private void startIgnoreConvo(EntityId id){
@@ -75,12 +86,29 @@ public class DialogueState extends BaseAppState{
         DialogueMenu menu = menus.getMenu(Menus.DIALOGUE_UI_MENU);
         menu.setCharacterName(e.get(NameComponent.class).getName());
         menu.setMessage(Dialogues.getDismissal());
-        menu.setActions(new Action("leave"){
-            @Override
-            public void execute(Button button) {
-                menus.setNextMenu(Menus.GAME_UI_MENU);
-            }
-        });
+        menu.setActions(closeAction);
         menus.setNextMenu(Menus.DIALOGUE_UI_MENU);
+    }
+
+    private void startBuyerConvo(EntityId id) {
+        Entity e = conversations.getEntity(id);
+        DialogueMenu menu = menus.getMenu(Menus.DIALOGUE_UI_MENU);
+        menu.setCharacterName(e.get(NameComponent.class).getName());
+        TradeComponent trade = e.get(TradeComponent.class);
+        menu.setMessage(String.format(Dialogues.getSpecificBuy(), trade.getItemName()));
+        menu.setActions(new Action("Follow Me"){
+                @Override
+                public void execute(Button button) {
+
+                }
+            },
+                new Action("Here you go"){
+                @Override
+                public void execute(Button button) {
+
+                }
+            },
+                closeAction
+        );
     }
 }

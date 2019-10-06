@@ -20,8 +20,17 @@ public class Dialogues {
         "I don't have any spare change.",
         "Get out of my way."
     };
+    private static final String[] SPECIFICBUY = new String[]{
+        "Do you have a %1$S for sale?",
+        "I'm looking to buy a %1$S.",
+        "You wouldn't happen to have a %1$S?"
+    };
     
     public static String getDismissal(){
         return DISMISSALS[RANDOM.nextInt(DISMISSALS.length)];
+    }
+    
+    public static String getSpecificBuy(){
+        return SPECIFICBUY[RANDOM.nextInt(SPECIFICBUY.length)];
     }
 }

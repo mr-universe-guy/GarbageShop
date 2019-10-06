@@ -139,6 +139,13 @@ public class MobState extends BaseAppState implements TimeListener{
         }
         DriverComponent driver = new DriverComponent(dir);
         NameComponent name = new NameComponent(id.toString());
+        if(random.nextFloat() <= 0.2f){
+            //get random trade
+            Item randomItem = Items.getRandomItem();
+            TradeComponent trade = new TradeComponent(
+                    randomItem.getItemName(), randomItem.getTags(), false);
+            ed.setComponent(id, trade);
+        }
         ed.setComponents(id, pos, mob, driver, name);
         return id;
     }
