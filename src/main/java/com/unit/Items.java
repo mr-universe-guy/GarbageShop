@@ -5,6 +5,7 @@
  */
 package com.unit;
 
+import com.simsilica.es.EntityId;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,5 +35,19 @@ public class Items {
             }
         }
         return v;
+    }
+    
+    public static boolean isAcceptable(Item offer, Item target){
+        if(target.getItemName().equals(offer.getItemName())){
+            return true;
+        }
+        String[] targetTags = target.getTags().split(",");
+        String offerTags = offer.getTags();
+        for(String tag : targetTags){
+            if(!offerTags.contains(tag)){
+                return false;
+            }
+        }
+        return true;
     }
 }

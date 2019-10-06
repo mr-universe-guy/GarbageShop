@@ -35,6 +35,7 @@ import com.unit.ItemState;
 import com.unit.MobComponent;
 import com.unit.MobState;
 import com.unit.PositionComponent;
+import com.unit.Wallet;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,6 +50,7 @@ public class GarbageShopApp extends SimpleApplication{
     private InputMapper inputMapper;
     private EntityId playerId;
     private Inventory playerInventory;
+    private Wallet playerWallet;
     private Item heldItem;
     private final int wakeupTime = 6;
     private final int closeTime = 22;
@@ -66,6 +68,7 @@ public class GarbageShopApp extends SimpleApplication{
         stateManager.attach(data);
         spawnPlayer(ed);
         playerInventory = new Inventory();
+        playerWallet = new Wallet(0);
         //prep ui
         GuiGlobals.initialize(this);
         GuiGlobals globals = GuiGlobals.getInstance();
@@ -134,6 +137,10 @@ public class GarbageShopApp extends SimpleApplication{
 
     public Item getHeldItem() {
         return heldItem;
+    }
+    
+    public Wallet getPlayerWallet(){
+        return playerWallet;
     }
 
     public void setHeldItem(Item heldItem) {

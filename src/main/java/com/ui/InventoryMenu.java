@@ -46,6 +46,7 @@ public class InventoryMenu extends BaseMenu implements HeldItemListener, GridLis
     private InputManager im;
     private Camera guiCam;
     private Material temp;
+    private GridListener gridIntercept;
 
     public InventoryMenu(Inventory inventory) {
         this.inventory = inventory;
@@ -81,6 +82,7 @@ public class InventoryMenu extends BaseMenu implements HeldItemListener, GridLis
     public void onDisable() {
         GarbageShopApp app = (GarbageShopApp)getDirector().getApplication();
         app.removeHeldItemListener(this);
+        gridIntercept = null;
     }
 
     @Override
@@ -115,6 +117,10 @@ public class InventoryMenu extends BaseMenu implements HeldItemListener, GridLis
 
     @Override
     public void onGridSelection(Coordinate coordinate) {
+        if(gridIntercept != null){
+            gridIntercept.onGridSelection(coordinate);
+            return;
+        }
         if(heldItem == null){
             //pickup item from inventory
             InventoryItem item = inventory.getInventoryItemAtCoordinate(coordinate);
@@ -173,5 +179,13 @@ public class InventoryMenu extends BaseMenu implements HeldItemListener, GridLis
         spat.setMaterial(temp);
         spat.setLocalScale(cellSize*10);
         return spat;
+    }
+
+    public GridListener getGridIntercept() {
+        return gridIntercept;
+    }
+
+    public void setGridIntercept(GridListener gridIntercept) {
+        this.gridIntercept = gridIntercept;
     }
 }

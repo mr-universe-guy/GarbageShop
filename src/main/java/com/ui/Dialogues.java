@@ -25,12 +25,34 @@ public class Dialogues {
         "I'm looking to buy a %1$S.",
         "You wouldn't happen to have a %1$S?"
     };
+    private static final String[] REFUSEPURCHASE = new String[]{
+        "I'm not going to buy that.",
+        "That's not at all what I asked for.",
+        "No, thanks."
+    };
+    private static final String[] CUSTOMEROFFER = new String[]{
+        "I'll buy that for $%1$S.",
+        "Would you take $%1$S?",
+        "How does $%1$S sound?"
+    };
     
     public static String getDismissal(){
-        return DISMISSALS[RANDOM.nextInt(DISMISSALS.length)];
+        return getRandomFromArray(DISMISSALS);
     }
     
     public static String getSpecificBuy(){
-        return SPECIFICBUY[RANDOM.nextInt(SPECIFICBUY.length)];
+        return getRandomFromArray(SPECIFICBUY);
+    }
+    
+    public static String getRefusePurchase(){
+        return getRandomFromArray(REFUSEPURCHASE);
+    }
+    
+    public static String getCustomerOffer(){
+        return getRandomFromArray(CUSTOMEROFFER);
+    }
+    
+    private static String getRandomFromArray(String[] array){
+        return array[RANDOM.nextInt(array.length)];
     }
 }

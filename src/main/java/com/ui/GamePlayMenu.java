@@ -14,6 +14,7 @@ import com.mrugames.menumonkey.BaseMenu;
 import com.mrugames.menumonkey.MenuDirectorState;
 import com.simsilica.lemur.HAlignment;
 import com.simsilica.lemur.Label;
+import com.unit.WalletListener;
 
 /**
  * The game menu is very very simple UI
@@ -22,7 +23,7 @@ import com.simsilica.lemur.Label;
  * The item you are inspecting hovering mid screen
  * @author matt
  */
-public class GamePlayMenu extends BaseMenu implements TimeListener{
+public class GamePlayMenu extends BaseMenu implements TimeListener, WalletListener{
     private final Label cashLabel, clockLabel, cursorLabel;
     private InputManager im;
 
@@ -53,6 +54,7 @@ public class GamePlayMenu extends BaseMenu implements TimeListener{
         GarbageShopApp app = (GarbageShopApp)director.getApplication();
         setHour(app.curHour);
         app.addTimeListener(this);
+        app.getPlayerWallet().addListener(this);
         im = app.getInputManager();
     }
 
@@ -75,5 +77,10 @@ public class GamePlayMenu extends BaseMenu implements TimeListener{
     
     public void setCursorText(String text){
         cursorLabel.setText(text);
+    }
+
+    @Override
+    public void onTransaction(long changeAmount, long totalCash) {
+        cashLabel.setText("$"+totalCash);
     }
 }
