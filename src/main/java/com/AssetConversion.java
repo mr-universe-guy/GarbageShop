@@ -40,8 +40,8 @@ public class AssetConversion extends SimpleApplication{
     @Override
     public void simpleInitApp() {
         //use this space to load a gltf, add materials n such then write it to a j3o
-        Spatial spat = assetManager.loadModel("models/phone.gltf");
-        TextureKey tk = new TextureKey("textures/PhoneDiffuse.png");
+        Spatial spat = assetManager.loadModel("models/harmonica.gltf");
+        TextureKey tk = new TextureKey("textures/HarmonicaDiffuse.png");
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         mat.setTexture("ColorMap", assetManager.loadTexture(tk));
         spat.setMaterial(mat);

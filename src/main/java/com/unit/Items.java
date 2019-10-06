@@ -26,6 +26,8 @@ public class Items {
                 "art,entertainment"));
         ITEMMAP.put("Phone", new Item("Phone", 1,2,5,10,"object/PhoneObject.j3o",
                 "tech,phone"));
+        ITEMMAP.put("Harmonica", new Item("Harmonica", 2,1,3,6,"object/HarmonicaObject.j3o",
+                "entertainment,music"));
     }
     
     public static Item getRandomItem(){
