@@ -27,17 +27,16 @@ import java.util.Random;
 public class MobState extends BaseAppState implements TimeListener{
     private final Random random = new Random();
     private SceneState mapState;
+    private Scene scene;
     private EntityData ed;
     private EntitySet mobs;
-    private Vector2f northSpawn = new Vector2f(27,20);
-    private Vector2f southSpawn = new Vector2f(27,0);
-    private float spawnRadius = 3;
     private float minSpeed = 0.7f;
     private float maxSpeed = 1.f;
 
     @Override
     protected void initialize(Application aplctn) {
         mapState = getState(SceneState.class);
+        scene = mapState.getMap();
         ed = getState(DataState.class).getEd();
     }
 
@@ -118,16 +117,16 @@ public class MobState extends BaseAppState implements TimeListener{
     public void spawnWave(int numSpawned){
         int half = numSpawned/2;
         for(int i=0; i<half; i++){
-            spawnPedestrian(northSpawn);
+            spawnPedestrian(scene.getNorthSpawn());
         }
         for(int i=0; i<numSpawned-half; i++){
-            spawnPedestrian(southSpawn);
+            spawnPedestrian(scene.getSouthSpawn());
         }
     }
     
     public EntityId spawnPedestrian(Vector2f spawnPos){
         PositionComponent pos = new PositionComponent(
-                spawnPos.add(Vectors.randomFromRadius(spawnRadius)), 0);
+                spawnPos.add(Vectors.randomFromRadius(scene.getSpawnRadius())), 0);
         float speed = minSpeed+(random.nextFloat()*(maxSpeed-minSpeed));
         MobComponent mob = new MobComponent(speed, 0.3f);
         EntityId id = ed.createEntity();

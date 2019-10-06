@@ -10,6 +10,7 @@ import com.jme3.app.Application;
 import com.jme3.app.state.BaseAppState;
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
+import com.jme3.math.Vector2f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
@@ -19,20 +20,21 @@ import com.jme3.scene.Spatial;
  * @author matt
  */
 public class SceneState extends BaseAppState{
-    private Scene map;
+    private Scene scene;
     private final Node mapNode = new Node("Map_Objects");
 
     @Override
     protected void initialize(Application aplctn) {
         GarbageShopApp app = (GarbageShopApp)aplctn;
-        map = new Scene();
+        scene = new Scene(new Vector2f(13,22), new Vector2f(13,-2));
         //build collision objects
-        map.addGridObject(new StaticGridObject(new Coordinate(0,0), new Coordinate(6,10)));
-        map.addGridObject(new StaticGridObject(new Coordinate(0,10), new Coordinate(1,2)));
-        map.addGridObject(new StaticGridObject(new Coordinate(0,12), new Coordinate(24,8)));
-        map.addGridObject(new StaticGridObject(new Coordinate(6,0), new Coordinate(10,2)));
-        map.addGridObject(new StaticGridObject(new Coordinate(16,0), new Coordinate(8,10)));
-        map.setAlleyArea(new Coordinate(3,10), new Coordinate(23,12));
+        scene.addCollisionObject(new StaticGridObject(new Coordinate(0,0), new Coordinate(10,10)));
+        scene.addCollisionObject(new StaticGridObject(new Coordinate(0,12), new Coordinate(10,8)));
+        scene.addCollisionObject(new StaticGridObject(new Coordinate(16,0), new Coordinate(7,4)));
+        scene.addCollisionObject(new StaticGridObject(new Coordinate(16,6), new Coordinate(7,14)));
+        //set some item spawners
+        scene.addItemSpawnArea(new StaticGridObject(new Coordinate(3,10), new Coordinate(6,2)));
+        scene.addItemSpawnArea(new StaticGridObject(new Coordinate(17,4), new Coordinate(4,2)));
         //build map visuals
         AssetManager am = app.getAssetManager();
         Spatial dumpster = am.loadModel("models/dumpster.gltf");
@@ -60,6 +62,6 @@ public class SceneState extends BaseAppState{
     }
 
     public Scene getMap() {
-        return map;
+        return scene;
     }
 }

@@ -14,6 +14,7 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
 import com.scene.Collisions;
 import com.scene.Coordinate;
+import com.scene.GridObject;
 import com.scene.Scene;
 import com.scene.SceneState;
 import com.scene.Vectors;
@@ -74,40 +75,44 @@ public class ItemState extends BaseAppState implements DayListener{
     }
 
     private void cleanTrash() {
-        Coordinate min = scene.getAlleyMin();
-        Coordinate max = scene.getAlleyMax();
         for(Entity e : liveItems){
             //kill all trash that's hanging around in the open
-            if(Collisions.pointInBox(e.get(PositionComponent.class).getPosition(),
-            Vectors.fromCoordinate(min), Vectors.fromCoordinate(max))){
-                ed.removeEntity(e.getId());
+            for(GridObject spawnArea : scene.getItemSpawners()){
+                Coordinate min = spawnArea.getPosition();
+                Coordinate max = min.add(spawnArea.getSize());
+                if(Collisions.pointInBox(e.get(PositionComponent.class).getPosition(),
+                Vectors.fromCoordinate(min), Vectors.fromCoordinate(max))){
+                    ed.removeEntity(e.getId());
+                }
             }
         }
     }
 
     private void spawnTrash() {
-        Coordinate min = scene.getAlleyMin();
-        Coordinate max = scene.getAlleyMax();
-        int numTrash = 2+random.nextInt(2);
-        float rangeX = max.x - min.x;
-        float rangeY = max.y - min.y;
-        for(int i=0; i<numTrash; i++){
-            Set<Entry<String, Item>> items = Items.ITEMMAP.entrySet();
-            int r = random.nextInt(items.size());
-            int x=0;
-            Item item = null;
-            for(Entry<String, Item> entry : items){
-                if(x != r) {
-                    x++;
-                    continue;
+        for(GridObject spawnArea : scene.getItemSpawners()){
+            Coordinate min = spawnArea.getPosition();
+            Coordinate max = min.add(spawnArea.getSize());
+            int numTrash = 2+random.nextInt(2);
+            float rangeX = max.x - min.x;
+            float rangeY = max.y - min.y;
+            for(int i=0; i<numTrash; i++){
+                Set<Entry<String, Item>> items = Items.ITEMMAP.entrySet();
+                int r = random.nextInt(items.size());
+                int x=0;
+                Item item = null;
+                for(Entry<String, Item> entry : items){
+                    if(x != r) {
+                        x++;
+                        continue;
+                    }
+                    item = entry.getValue();
                 }
-                item = entry.getValue();
+                if(item == null) throw new RuntimeException("Item failed to generate");
+                float posX = min.x+(random.nextFloat()*rangeX);
+                float posY = min.y+(random.nextFloat()*rangeY);
+                float rot = random.nextFloat()*FastMath.TWO_PI;
+                spawnItem(item, new Vector2f(posX, posY), rot);
             }
-            if(item == null) throw new RuntimeException("Item failed to generate");
-            float posX = min.x+(random.nextFloat()*rangeX);
-            float posY = min.y+(random.nextFloat()*rangeY);
-            float rot = random.nextFloat()*FastMath.TWO_PI;
-            spawnItem(item, new Vector2f(posX, posY), rot);
         }
     }
     
