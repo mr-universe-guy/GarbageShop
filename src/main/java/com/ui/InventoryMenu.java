@@ -176,7 +176,7 @@ public class InventoryMenu extends BaseMenu implements HeldItemListener, GridLis
     private Spatial loadSpatial(String asset){
         Spatial spat = am.loadModel(asset);
         //temp add a default material, gotta fix this soon!
-        spat.setMaterial(temp);
+//        spat.setMaterial(temp);
         spat.setLocalScale(cellSize*10);
         return spat;
     }

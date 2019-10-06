@@ -146,7 +146,7 @@ public class MobState extends BaseAppState implements TimeListener{
                     randomItem.getItemName(), randomItem.getTags(), false);
             ed.setComponent(id, trade);
         }
-        VisualComponent vis = new VisualComponent("models/Character.gltf");
+        VisualComponent vis = new VisualComponent("object/CharacterObject.j3o");
         ed.setComponents(id, pos, mob, driver, name, vis);
         return id;
     }

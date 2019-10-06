@@ -121,7 +121,7 @@ public class GarbageShopApp extends SimpleApplication{
                 new MobComponent(1f,0.3f),
                 new DriverComponent(0f,0f),
                 new PositionComponent(3f,11f,0),
-                new VisualComponent("models/Character.gltf")
+                new VisualComponent("object/CharacterObject.j3o")
         );
     }
 

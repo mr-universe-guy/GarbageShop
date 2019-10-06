@@ -96,7 +96,9 @@ public class VisualState extends BaseAppState{
         Spatial spat = am.loadModel(asset);
         assetMap.put(id, spat);
         //for now we're applying a temp material
-        spat.setMaterial(mat);
+        if(!asset.endsWith("j3o")){
+            spat.setMaterial(mat);
+        }
         visualNode.attachChild(spat);
         translateAsset(spat, position, rot);
     }

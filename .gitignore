@@ -1,3 +1,9 @@
 asset/*
 /.gradle/
 /.blend/
+/src/main/resources/models/BuildingD.gltf
+/src/main/resources/models/BuildingC.gltf
+/src/main/resources/models/Road.gltf
+/src/main/resources/models/BuildingB.gltf
+/src/main/resources/models/BuildingA.gltf
+/src/main/resources/models/

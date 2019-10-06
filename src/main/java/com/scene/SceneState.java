@@ -9,7 +9,6 @@ import com.GarbageShopApp;
 import com.jme3.app.Application;
 import com.jme3.app.state.BaseAppState;
 import com.jme3.asset.AssetManager;
-import com.jme3.material.Material;
 import com.jme3.math.Vector2f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -42,11 +41,22 @@ public class SceneState extends BaseAppState{
         
         //build map visuals
         AssetManager am = app.getAssetManager();
-        Spatial dumpster = am.loadModel("models/dumpster.gltf");
-        Material mat = new Material(am, "Common/MatDefs/Misc/Unshaded.j3md");
-        dumpster.setMaterial(mat);
-        dumpster.setLocalTranslation(1, 11, 0);
-        mapNode.attachChild(dumpster);
+//        Spatial dumpster = am.loadModel("models/dumpster.gltf");
+//        Material mat = new Material(am, "Common/MatDefs/Misc/Unshaded.j3md");
+//        dumpster.setMaterial(mat);
+//        dumpster.setLocalTranslation(1, 11, 0);
+//        mapNode.attachChild(dumpster);
+        
+        Spatial buildingA = am.loadModel("object/BuildingAObject.j3o");
+        mapNode.attachChild(buildingA);
+        Spatial buildingB = am.loadModel("object/BuildingBObject.j3o");
+        mapNode.attachChild(buildingB);
+        Spatial buildingC = am.loadModel("object/BuildingCObject.j3o");
+        mapNode.attachChild(buildingC);
+        Spatial buildingD = am.loadModel("object/BuildingDObject.j3o");
+        mapNode.attachChild(buildingD);
+        Spatial road = am.loadModel("object/RoadObject.j3o");
+        mapNode.attachChild(road);
         
         app.getRootNode().attachChild(mapNode);
     }
