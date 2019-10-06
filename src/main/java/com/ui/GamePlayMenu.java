@@ -13,6 +13,7 @@ import com.jme3.scene.Node;
 import com.mrugames.menumonkey.BaseMenu;
 import com.mrugames.menumonkey.MenuDirectorState;
 import com.simsilica.lemur.HAlignment;
+import com.simsilica.lemur.Insets3f;
 import com.simsilica.lemur.Label;
 import com.unit.WalletListener;
 
@@ -24,7 +25,7 @@ import com.unit.WalletListener;
  * @author matt
  */
 public class GamePlayMenu extends BaseMenu implements TimeListener, WalletListener{
-    private final Label cashLabel, clockLabel, cursorLabel;
+    private final Label cashLabel, clockLabel, cursorLabel, warningLabel;
     private InputManager im;
 
     public GamePlayMenu() {
@@ -33,10 +34,12 @@ public class GamePlayMenu extends BaseMenu implements TimeListener, WalletListen
         //cash label top right
         cashLabel = new Label("$0");
         cashLabel.setMaxWidth(100);
+        cashLabel.setInsets(new Insets3f(10,20,10,20));
         cashLabel.setTextHAlignment(HAlignment.Right);
         node.attachChild(cashLabel);
         
         clockLabel = new Label("00:00");
+        clockLabel.setInsets(new Insets3f(10,10,10,10));
         clockLabel.setTextHAlignment(HAlignment.Center);
         node.attachChild(clockLabel);
         
@@ -44,6 +47,11 @@ public class GamePlayMenu extends BaseMenu implements TimeListener, WalletListen
         cursorLabel.setMaxWidth(150);
         cursorLabel.setTextHAlignment(HAlignment.Center);
         node.attachChild(cursorLabel);
+        
+        warningLabel = new Label("");
+        warningLabel.setMaxWidth(150);
+        warningLabel.setTextHAlignment(HAlignment.Center);
+        node.attachChild(warningLabel);
     }
 
     @Override
@@ -56,6 +64,7 @@ public class GamePlayMenu extends BaseMenu implements TimeListener, WalletListen
         app.addTimeListener(this);
         app.getPlayerWallet().addListener(this);
         im = app.getInputManager();
+        director.centerPanelToScreen(warningLabel);
     }
 
     @Override
@@ -82,5 +91,9 @@ public class GamePlayMenu extends BaseMenu implements TimeListener, WalletListen
     @Override
     public void onTransaction(long changeAmount, long totalCash) {
         cashLabel.setText("$"+totalCash);
+    }
+    
+    public void setWarningText(String text){
+        warningLabel.setText(text);
     }
 }

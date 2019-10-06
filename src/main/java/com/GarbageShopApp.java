@@ -61,6 +61,7 @@ public class GarbageShopApp extends SimpleApplication{
     private Wallet playerWallet;
     private Item heldItem;
     private AnimationState anim;
+    private MenuDirectorState menus;
     private final int wakeupTime = 6;
     private final int closeTime = 22;
     private final float hourDuration = 300f/(closeTime-wakeupTime);
@@ -84,7 +85,7 @@ public class GarbageShopApp extends SimpleApplication{
         GuiGlobals globals = GuiGlobals.getInstance();
         inputMapper = globals.getInputMapper();
         Inputs.registerDefaultInput(inputMapper);
-        MenuDirectorState menus = new MenuDirectorState();
+        menus = new MenuDirectorState();
         menus.registerMenu(Menus.INVENTORY_UI_MENU, new InventoryMenu(playerInventory));
         menus.registerMenu(Menus.DIALOGUE_UI_MENU, new DialogueMenu());
         menus.registerMenu(Menus.SLEEP_UI_MENU, new SleepMenu());
@@ -165,18 +166,22 @@ public class GarbageShopApp extends SimpleApplication{
 
     private void setHour(int hour) {
         hourProgress = 0;
-        if(hour > closeTime) return;//day ends at 10pm, time "stops" and player can dick around
+        if(hour > closeTime) {
+            GamePlayMenu gpm = menus.getMenu(Menus.GAME_UI_MENU);
+            gpm.setWarningText("It's time to go to bed, no one else will be out this late.");
+            return;
+        }//day ends at 10pm, time "stops" and player can dick around
         curHour = hour;
         for(TimeListener timer : timeListeners){
             timer.setHour(curHour);
         }
-        System.out.println("Current time is "+hour);
     }
     
     public void sleep(){
         //TODO: fade to black first
-        MenuDirectorState menus = stateManager.getState(MenuDirectorState.class);
         menus.setNextMenu(Menus.SLEEP_UI_MENU);
+        GamePlayMenu gpm = menus.getMenu(Menus.GAME_UI_MENU);
+            gpm.setWarningText("");
         SleepMenu sleep = menus.getMenu(Menus.SLEEP_UI_MENU);
         Container sleepInfo = sleep.getSleepInfoContainer();
         Label situation = new Label(String.format("You start the night with $%s"
