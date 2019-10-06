@@ -22,6 +22,10 @@ public class Items {
         //fill map here
         ITEMMAP.put("Battery", new Item("Battery", 1,1,1,3,"object/BatteryObject.j3o",
                 "robot,small,power,trash"));
+        ITEMMAP.put("Magazine", new Item("Magazine", 2,2,2,5,"object/MagazineObject.j3o",
+                "art,entertainment"));
+        ITEMMAP.put("Phone", new Item("Phone", 1,2,5,10,"object/PhoneObject.j3o",
+                "tech,phone"));
     }
     
     public static Item getRandomItem(){
@@ -29,8 +33,8 @@ public class Items {
         int r = RANDOM.nextInt(items.size());
         Item v = null;
         for(Item item : items){
-            v = item;
-            if(r-- == 0){
+            if(--r < 0){
+                v = item;
                 break;
             }
         }

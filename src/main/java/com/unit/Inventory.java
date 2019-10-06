@@ -45,6 +45,9 @@ public class Inventory {
     
     public boolean placeItemAtCoordinate(Coordinate coord, Item item){
         Coordinate itemMax = coord.add(item.getWidth()-1, item.getHeight()-1);
+        if(itemMax.x+1 > width || itemMax.y+1 > height){
+            return false;
+        }
         for(InventoryItem b : itemList){
             Coordinate bMin = b.pos;
             Coordinate bMax = bMin.add(b.item.getWidth()-1, b.item.getHeight()-1);

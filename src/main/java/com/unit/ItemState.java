@@ -22,9 +22,7 @@ import com.scene.VisualComponent;
 import com.simsilica.es.Entity;
 import com.simsilica.es.EntityData;
 import com.simsilica.es.EntitySet;
-import java.util.Map.Entry;
 import java.util.Random;
-import java.util.Set;
 
 /**
  * Every morning remove old items and spawn new ones
@@ -96,17 +94,7 @@ public class ItemState extends BaseAppState implements DayListener{
             float rangeX = max.x - min.x;
             float rangeY = max.y - min.y;
             for(int i=0; i<numTrash; i++){
-                Set<Entry<String, Item>> items = Items.ITEMMAP.entrySet();
-                int r = random.nextInt(items.size());
-                int x=0;
-                Item item = null;
-                for(Entry<String, Item> entry : items){
-                    if(x != r) {
-                        x++;
-                        continue;
-                    }
-                    item = entry.getValue();
-                }
+                Item item = Items.getRandomItem();
                 if(item == null) throw new RuntimeException("Item failed to generate");
                 float posX = min.x+(random.nextFloat()*rangeX);
                 float posY = min.y+(random.nextFloat()*rangeY);
@@ -117,7 +105,6 @@ public class ItemState extends BaseAppState implements DayListener{
     }
     
     public void spawnItem(Item item, Vector2f pos, float rot){
-        System.out.println("Spawning item "+item.getItemName()+" "+pos);
         ed.setComponents(ed.createEntity(),
                     new PositionComponent(pos, rot),
                     new ItemComponent(item.getItemName()),
