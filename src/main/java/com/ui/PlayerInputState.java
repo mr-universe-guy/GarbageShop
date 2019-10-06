@@ -235,7 +235,6 @@ public class PlayerInputState extends BaseAppState{
                 public void execute(Button button) {
                     GarbageShopApp app = (GarbageShopApp)getApplication();
                     app.sleep();
-                    menus.setNextMenu(Menus.GAME_UI_MENU);
                 }
             }, new Action("Stay Awake"){
                 @Override

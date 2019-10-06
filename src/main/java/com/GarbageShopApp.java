@@ -15,9 +15,12 @@ import com.scene.VisualComponent;
 import com.scene.VisualState;
 import com.simsilica.es.EntityData;
 import com.simsilica.es.EntityId;
+import com.simsilica.lemur.Container;
 import com.simsilica.lemur.GuiGlobals;
+import com.simsilica.lemur.Label;
 import com.simsilica.lemur.anim.AbstractTween;
 import com.simsilica.lemur.anim.AnimationState;
+import com.simsilica.lemur.anim.PanelTweens;
 import com.simsilica.lemur.anim.Tween;
 import com.simsilica.lemur.anim.Tweens;
 import com.simsilica.lemur.input.InputMapper;
@@ -29,6 +32,7 @@ import com.ui.Inputs;
 import com.ui.InventoryMenu;
 import com.ui.Menus;
 import com.ui.PlayerInputState;
+import com.ui.SleepMenu;
 import com.unit.ColorComponent;
 import com.unit.DriverComponent;
 import com.unit.HeldItemListener;
@@ -40,6 +44,7 @@ import com.unit.MobState;
 import com.unit.PositionComponent;
 import com.unit.Wallet;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -55,12 +60,14 @@ public class GarbageShopApp extends SimpleApplication{
     private Inventory playerInventory;
     private Wallet playerWallet;
     private Item heldItem;
+    private AnimationState anim;
     private final int wakeupTime = 6;
     private final int closeTime = 22;
     private final float hourDuration = 300f/(closeTime-wakeupTime);
     private float hourProgress = 0f;
     public int curHour = wakeupTime;
     public int curDay = 0;
+    private int costPerDay = 10;
 
     @Override
     public void simpleInitApp() {
@@ -71,7 +78,7 @@ public class GarbageShopApp extends SimpleApplication{
         stateManager.attach(data);
         spawnPlayer(ed);
         playerInventory = new Inventory();
-        playerWallet = new Wallet(0);
+        playerWallet = new Wallet(10);
         //prep ui
         GuiGlobals.initialize(this);
         GuiGlobals globals = GuiGlobals.getInstance();
@@ -80,11 +87,12 @@ public class GarbageShopApp extends SimpleApplication{
         MenuDirectorState menus = new MenuDirectorState();
         menus.registerMenu(Menus.INVENTORY_UI_MENU, new InventoryMenu(playerInventory));
         menus.registerMenu(Menus.DIALOGUE_UI_MENU, new DialogueMenu());
+        menus.registerMenu(Menus.SLEEP_UI_MENU, new SleepMenu());
         menus.registerMenu(Menus.GAME_UI_MENU, new GamePlayMenu());
         menus.setNextMenu(Menus.GAME_UI_MENU);
         
         //attach everything else
-        AnimationState anim = new AnimationState();
+        anim = new AnimationState();
         stateManager.attachAll(
                 anim,
                 new SceneState(),
@@ -167,10 +175,61 @@ public class GarbageShopApp extends SimpleApplication{
     
     public void sleep(){
         //TODO: fade to black first
+        MenuDirectorState menus = stateManager.getState(MenuDirectorState.class);
+        menus.setNextMenu(Menus.SLEEP_UI_MENU);
+        SleepMenu sleep = menus.getMenu(Menus.SLEEP_UI_MENU);
+        Container sleepInfo = sleep.getSleepInfoContainer();
+        Label situation = new Label(String.format("You start the night with $%s"
+                                        ,playerWallet.getCash()));
+        situation.setAlpha(0f);
+        sleepInfo.addChild(situation);
+        Label cost = new Label(String.format("It will cost you $%s to get enough"
+                + " food and water to survive the night.",costPerDay));
+        cost.setAlpha(0f);
+        sleepInfo.addChild(cost);
+        boolean canAdvance = playerWallet.getCash() >= costPerDay;
+        List<Tween> sequence = new LinkedList<>();
+        sequence.add(PanelTweens.fade(sleep.getFadePanel(), 0f, 1f, 1.0));
+        sequence.add(PanelTweens.fade(situation, 0f, 1f, 3.0));
+        sequence.add(PanelTweens.fade(cost, 0f, 1f, 3.0));
+        Label result;
+        if(canAdvance){
+            playerWallet.transaction(-costPerDay);
+            Object o;
+            if(playerWallet.getCash() == 0){
+                o = "nothing";
+            } else{
+                o="$"+playerWallet.getCash();
+            }
+            result = new Label(String.format(
+                    "Which leaves you with %s in your pockets.",o)
+            );
+            result.setAlpha(0f);
+            sequence.add(PanelTweens.fade(result, 0f, 1f, 3.0));
+            sequence.add(new AbstractTween(0){
+                    @Override
+                    protected void doInterpolate(double d) {
+                        curDay++;
+                        notifyDayListeners();
+                        setHour(wakeupTime);
+                    }
+                });
+            sequence.add(PanelTweens.fade(sleep.getFadePanel(), 1f, 0f, 1.0));
+            sequence.add(Tweens.callMethod(menus, "setNextMenu", Menus.GAME_UI_MENU));
+        } else{
+            result = new Label("You sadly don't have enough...");
+            result.setAlpha(0f);
+            sequence.add(PanelTweens.fade(result, 0f, 1f, 5.0));
+            //TODO: GameOver
+        }
+        sleepInfo.addChild(result);
+        anim.add(sequence.toArray(new Tween[sequence.size()]));
+    }
+    
+    private void notifyDayListeners(){
         for(DayListener listener : dayListeners){
             listener.nextDay();
         }
-        setHour(wakeupTime);
     }
     
     public void addTimeListener(TimeListener timer){

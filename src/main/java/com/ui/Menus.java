@@ -13,4 +13,5 @@ public class Menus {
     public static final String GAME_UI_MENU = "Game_UI";
     public static final String INVENTORY_UI_MENU = "Inventory_UI";
     public static final String DIALOGUE_UI_MENU = "Dialogue_UI";
+    public static final String SLEEP_UI_MENU = "Sleep_UI";
 }
