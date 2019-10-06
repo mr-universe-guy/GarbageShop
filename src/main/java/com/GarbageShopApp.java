@@ -72,6 +72,8 @@ public class GarbageShopApp extends SimpleApplication{
 
     @Override
     public void simpleInitApp() {
+        this.setDisplayStatView(false);
+        this.setDisplayFps(false);
         //very first state is data state
         DataState data = new DataState();
         EntityData ed = data.getEd();
