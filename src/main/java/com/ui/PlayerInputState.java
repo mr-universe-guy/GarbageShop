@@ -48,6 +48,7 @@ public class PlayerInputState extends BaseAppState{
     private MenuDirectorState menus;
     private GamePlayMenu gameUI;
     private EntityId highlightedId = null;
+    private boolean sprint = false;
     
     private final AnalogFunctionListener ano = (FunctionId fi, double d, double d1) -> {
         if(Inputs.MOVE_X.equals(fi)){
@@ -56,7 +57,7 @@ public class PlayerInputState extends BaseAppState{
         }
         if(Inputs.MOVE_Y.equals(fi)){
             movement.y = (float)d;
-            needUpdate =true;
+            needUpdate = true;
         }
     };
     
@@ -66,6 +67,10 @@ public class PlayerInputState extends BaseAppState{
         }
         if(Inputs.INVENTORY.equals(fi) && InputState.Positive.equals(is)){
             toggleInventory();
+        }
+        if(Inputs.SPRINT.equals(fi)){
+            sprint = InputState.Positive.equals(is);
+            needUpdate = true;
         }
     };
 
@@ -85,7 +90,7 @@ public class PlayerInputState extends BaseAppState{
         cam = app.getCamera();
         InputMapper im = app.getInputMapper();
         im.addAnalogListener(ano, Inputs.MOVE_X, Inputs.MOVE_Y);
-        im.addStateListener(state, Inputs.INTERACT, Inputs.INVENTORY);
+        im.addStateListener(state, Inputs.INTERACT, Inputs.INVENTORY, Inputs.SPRINT);
         inputManager = app.getInputManager();
         player = ed.watchEntity(app.getPlayerId(), PositionComponent.class);
         pickableItems = ed.getEntities(ItemComponent.class, PositionComponent.class);
@@ -105,7 +110,11 @@ public class PlayerInputState extends BaseAppState{
     @Override
     public void update(float tpf) {
         if(needUpdate){
-            ed.setComponent(player.getId(), new DriverComponent(movement.clone()));
+            if(sprint){
+                ed.setComponent(player.getId(), new DriverComponent(movement.mult(2)));
+            } else{
+                ed.setComponent(player.getId(), new DriverComponent(movement.clone()));
+            }
         }
         player.applyChanges();
         pickableItems.applyChanges();
@@ -150,7 +159,6 @@ public class PlayerInputState extends BaseAppState{
     private void interact(){
         GarbageShopApp app = (GarbageShopApp)getApplication();
         Item heldItem = app.getHeldItem();
-        System.out.println("Interacting");
         if(heldItem != null){
             //we're holding something so this does new stuff
             if(highlightedId == null){

@@ -48,9 +48,9 @@ public class GarbageShopApp extends SimpleApplication{
     private EntityId playerId;
     private Inventory playerInventory;
     private Item heldItem;
-    private final float hourDuration = (24f)/(5f);
     private final int wakeupTime = 6;
     private final int closeTime = 22;
+    private final float hourDuration = 300f/(closeTime-wakeupTime);
     private float hourProgress = 0f;
     public int curHour = wakeupTime;
     public int curDay = 0;
@@ -103,8 +103,8 @@ public class GarbageShopApp extends SimpleApplication{
 
     @Override
     public void simpleUpdate(float tpf) {
-        if((hourProgress+=tpf) > hourDuration){
-            setHour(curHour++);
+        if((hourProgress+=tpf) >= hourDuration){
+            setHour(curHour+1);
         }
     }
     
@@ -146,6 +146,7 @@ public class GarbageShopApp extends SimpleApplication{
         for(TimeListener timer : timeListeners){
             timer.setHour(curHour);
         }
+        System.out.println("Current time is "+hour);
     }
     
     private void sleep(){

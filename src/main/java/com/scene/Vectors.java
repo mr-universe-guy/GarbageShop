@@ -8,12 +8,15 @@ package com.scene;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import java.util.Random;
 
 /**
  *
  * @author matt
  */
 public class Vectors {
+    public static final Random random = new Random();
+    
     public static Vector3f vec2ToVec3(Vector2f v){
         return new Vector3f(v.x, v.y, 0);
     }
@@ -30,5 +33,11 @@ public class Vectors {
     
     public static Vector2f fromCoordinate(Coordinate other){
         return new Vector2f(other.x, other.y);
+    }
+    
+    public static Vector2f randomFromRadius(float radius){
+        Vector2f pos = new Vector2f(random.nextFloat()*radius, 0);
+        pos.rotateAroundOrigin(random.nextFloat()*FastMath.TWO_PI, false);
+        return pos;
     }
 }
