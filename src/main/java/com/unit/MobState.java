@@ -139,7 +139,7 @@ public class MobState extends BaseAppState implements TimeListener{
             dir = new Vector2f(0,-1);
         }
         DriverComponent driver = new DriverComponent(dir);
-        NameComponent name = new NameComponent(id.toString());
+        NameComponent name = new NameComponent(Names.getRandomName());
         ColorComponent color = new ColorComponent(ColorRGBA.randomColor());
         if(random.nextFloat() <= 0.2f){
             //get random trade
