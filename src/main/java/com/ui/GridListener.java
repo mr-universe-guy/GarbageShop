@@ -11,6 +11,7 @@ import com.scene.Coordinate;
  *
  * @author matt
  */
-public interface GridSelectionAction {
+public interface GridListener {
     public void onGridSelection(Coordinate coordinate);
+    public void onGridHighlight(Coordinate coordinate);
 }

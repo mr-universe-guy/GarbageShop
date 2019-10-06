@@ -17,6 +17,7 @@ import com.jme3.scene.Spatial;
 import com.mrugames.menumonkey.BaseMenu;
 import com.scene.Coordinate;
 import com.simsilica.lemur.Container;
+import com.simsilica.lemur.HAlignment;
 import com.simsilica.lemur.Label;
 import com.simsilica.lemur.Panel;
 import com.simsilica.lemur.component.BorderLayout;
@@ -32,9 +33,10 @@ import java.util.List;
  * and need to show the current held item
  * @author matt
  */
-public class InventoryMenu extends BaseMenu implements HeldItemListener, GridSelectionAction{
+public class InventoryMenu extends BaseMenu implements HeldItemListener, GridListener{
     private final List<Spatial> inventorySpatials = new ArrayList<>();
     private final Container inventoryContainer = new Container(new BorderLayout());
+    private final Label hoverLabel = new Label("");
     private float cellSize = 32f;//size of grid cells in pixels
     private final GridPanel grid;
     private final Inventory inventory;
@@ -54,6 +56,9 @@ public class InventoryMenu extends BaseMenu implements HeldItemListener, GridSel
         grid.setSelectionAction(this);
         inventoryContainer.addChild(grid, BorderLayout.Position.Center);
         menuNode.attachChild(inventoryContainer);
+        hoverLabel.setMaxWidth(150);
+        hoverLabel.setTextHAlignment(HAlignment.Center);
+        menuNode.attachChild(hoverLabel);
     }
 
     @Override
@@ -80,12 +85,14 @@ public class InventoryMenu extends BaseMenu implements HeldItemListener, GridSel
 
     @Override
     public void update(float tpf) {
+        Vector2f cPos = im.getCursorPosition();
         //move the item on screen with player cursor
         if(heldSpatial != null){
-            Vector2f cPos = im.getCursorPosition();
             Vector3f screenPos = new Vector3f(cPos.x, cPos.y, 5);
             heldSpatial.setLocalTranslation(screenPos);
         }
+        //move hover label with cursor
+        hoverLabel.setLocalTranslation(cPos.x-75, cPos.y-20, 1);
     }
 
     @Override
@@ -124,6 +131,20 @@ public class InventoryMenu extends BaseMenu implements HeldItemListener, GridSel
             renderInventoryItems();
         } else{
             //failed :(
+        }
+    }
+
+    @Override
+    public void onGridHighlight(Coordinate coordinate) {
+        if(coordinate == null){
+            hoverLabel.setText("");
+            return;
+        }
+        InventoryItem item = inventory.getInventoryItemAtCoordinate(coordinate);
+        if(item != null){
+            hoverLabel.setText(item.item.getItemName());
+        } else{
+            hoverLabel.setText("");
         }
     }
     

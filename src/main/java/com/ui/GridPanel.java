@@ -25,7 +25,7 @@ import com.unit.Item;
  * @author matt
  */
 public class GridPanel extends Panel{
-    private GridSelectionAction selectionAction;
+    private GridListener gridListener;
     private float cellSize;
     private int width;
     private int height;
@@ -121,8 +121,8 @@ public class GridPanel extends Panel{
         this.gridColorB = gridColorB;
     }
 
-    public void setSelectionAction(GridSelectionAction selectionAction) {
-        this.selectionAction = selectionAction;
+    public void setSelectionAction(GridListener selectionAction) {
+        this.gridListener = selectionAction;
     }
     
     private void rebuildGrid(){
@@ -197,16 +197,18 @@ public class GridPanel extends Panel{
         @Override
         public void mouseEntered(MouseMotionEvent mme, Spatial sptl, Spatial sptl1) {
             showGridOccupation(cellCoord);
+            gridListener.onGridHighlight(cellCoord);
         }
 
         @Override
         public void mouseExited(MouseMotionEvent event, Spatial target, Spatial capture) {
             showGridOccupation(null);
+            gridListener.onGridHighlight(null);
         }
 
         @Override
         protected void click(MouseButtonEvent event, Spatial target, Spatial capture) {
-            selectionAction.onGridSelection(cellCoord);
+            gridListener.onGridSelection(cellCoord);
         }
     }
 }
