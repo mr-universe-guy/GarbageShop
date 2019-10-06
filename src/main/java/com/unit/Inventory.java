@@ -7,7 +7,6 @@ package com.unit;
 
 import com.scene.Collisions;
 import com.scene.Coordinate;
-import com.scene.Vectors;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,28 +26,37 @@ public class Inventory {
         height = STARTHEIGHT;
     }
     
-    public Item getItemAtCoordinate(Coordinate coord){
+    public InventoryItem getInventoryItemAtCoordinate(Coordinate coord){
         for(InventoryItem item : itemList){
             Coordinate itemPos = item.pos;
-            Coordinate itemExtent = itemPos.add(item.item.getWidth(), item.item.getHeight());
-            if(Collisions.pointInBox(Vectors.fromCoordinate(coord),
-                    Vectors.fromCoordinate(itemPos), Vectors.fromCoordinate(itemExtent))){
-                return item.item;
+            if(item.item.getWidth() == 1 && item.item.getHeight() == 1){
+                if(coord.equals(item.pos)){
+                    return item;
+                }
+            } else{
+                Coordinate itemExtent = itemPos.add(item.item.getWidth(), item.item.getHeight());
+                if(Collisions.pointInBox(coord,itemPos, itemExtent)){
+                    return item;
+                }
             }
         }
         return null;
     }
     
     public boolean placeItemAtCoordinate(Coordinate coord, Item item){
-        Coordinate itemMax = coord.add(item.getWidth(), item.getHeight());
+        Coordinate itemMax = coord.add(item.getWidth()-1, item.getHeight()-1);
         for(InventoryItem b : itemList){
             Coordinate bMin = b.pos;
-            Coordinate bMax = bMin.add(b.item.getWidth(), b.item.getHeight());
+            Coordinate bMax = bMin.add(b.item.getWidth()-1, b.item.getHeight()-1);
             if(Collisions.boxBoxCollision(coord, itemMax, bMin, bMax)){
                 return false;
             }
         }
         return itemList.add(new InventoryItem(item, coord));
+    }
+    
+    public boolean removeItem(InventoryItem item){
+        return itemList.remove(item);
     }
 
     public List<InventoryItem> getItemList() {

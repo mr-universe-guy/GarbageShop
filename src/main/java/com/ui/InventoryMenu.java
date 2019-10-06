@@ -24,6 +24,8 @@ import com.unit.HeldItemListener;
 import com.unit.Inventory;
 import com.unit.Inventory.InventoryItem;
 import com.unit.Item;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The inventory menu needs to display the players inventory as a grid,
@@ -31,6 +33,7 @@ import com.unit.Item;
  * @author matt
  */
 public class InventoryMenu extends BaseMenu implements HeldItemListener, GridSelectionAction{
+    private final List<Spatial> inventorySpatials = new ArrayList<>();
     private final Container inventoryContainer = new Container(new BorderLayout());
     private float cellSize = 32f;//size of grid cells in pixels
     private final GridPanel grid;
@@ -107,6 +110,11 @@ public class InventoryMenu extends BaseMenu implements HeldItemListener, GridSel
     public void onGridSelection(Coordinate coordinate) {
         if(heldItem == null){
             //pickup item from inventory
+            InventoryItem item = inventory.getInventoryItemAtCoordinate(coordinate);
+            if(item == null) return;
+            inventory.removeItem(item);
+            ((GarbageShopApp)getDirector().getApplication()).setHeldItem(item.item);
+            renderInventoryItems();
             return;
         }
         //attempt to place item into inventory
@@ -120,6 +128,9 @@ public class InventoryMenu extends BaseMenu implements HeldItemListener, GridSel
     }
     
     private void renderInventoryItems(){
+        for(Spatial s : inventorySpatials){
+            s.removeFromParent();
+        }
         Node menuNode = getMenuNode();
         for(InventoryItem invItem : inventory.getItemList()){
             Item item =invItem.item;
@@ -130,6 +141,7 @@ public class InventoryMenu extends BaseMenu implements HeldItemListener, GridSel
             Vector3f worldPos = cell.getWorldTranslation();
             spat.setLocalTranslation(worldPos.x+(item.getWidth()*cellSize*0.5f)
                     , worldPos.y-(item.getHeight()*cellSize*0.5f), 1);
+            inventorySpatials.add(spat);
             menuNode.attachChild(spat);
         }
     }
