@@ -15,12 +15,16 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.mrugames.menumonkey.MenuDirectorState;
 import com.scene.Collisions;
+import com.scene.GridObject;
+import com.scene.SceneState;
 import com.scene.Vectors;
 import com.simsilica.es.Entity;
 import com.simsilica.es.EntityData;
 import com.simsilica.es.EntityId;
 import com.simsilica.es.EntitySet;
 import com.simsilica.es.WatchedEntity;
+import com.simsilica.lemur.Action;
+import com.simsilica.lemur.Button;
 import com.simsilica.lemur.input.AnalogFunctionListener;
 import com.simsilica.lemur.input.FunctionId;
 import com.simsilica.lemur.input.InputMapper;
@@ -34,6 +38,7 @@ import com.unit.Items;
 import com.unit.MobComponent;
 import com.unit.NameComponent;
 import com.unit.PositionComponent;
+import java.util.List;
 
 /**
  *
@@ -42,6 +47,7 @@ import com.unit.PositionComponent;
 public class PlayerInputState extends BaseAppState{
     private EntityData ed;
     private EntitySet pickableItems, pickableMobs;
+    private List<GridObject> sleepZones;
     private WatchedEntity player;
     private Vector2f movement = new Vector2f(0,0);
     private boolean needUpdate = false;
@@ -51,6 +57,7 @@ public class PlayerInputState extends BaseAppState{
     private GamePlayMenu gameUI;
     private EntityId highlightedId = null;
     private boolean sprint = false;
+    private boolean inSleepZone = false;
     
     private final AnalogFunctionListener ano = (FunctionId fi, double d, double d1) -> {
         if(Inputs.MOVE_X.equals(fi)){
@@ -99,6 +106,7 @@ public class PlayerInputState extends BaseAppState{
         pickableMobs = ed.getEntities(MobComponent.class, NameComponent.class, PositionComponent.class);
         menus = getState(MenuDirectorState.class);
         gameUI = menus.getMenu(Menus.GAME_UI_MENU);
+        sleepZones = getState(SceneState.class).getMap().getSleepZones();
     }
 
     @Override
@@ -129,6 +137,16 @@ public class PlayerInputState extends BaseAppState{
         Vector3f cursorWorldPos =
                 cam.getWorldCoordinates(inputManager.getCursorPosition(), playerScreenPos.z);
         Vector2f cursor = Vectors.vec3ToVec2(cursorWorldPos);
+        //first check for sleep zones, this way they will be over-written always
+        inSleepZone = false;
+        for(GridObject sleepZone : sleepZones){
+            Vector2f min = Vectors.fromCoordinate(sleepZone.getPosition());
+            Vector2f max = min.add(Vectors.fromCoordinate(sleepZone.getSize()));
+            if(Collisions.pointInBox(cursor, min, max)){
+                inSleepZone = true;
+                break;
+            }
+        }
         //try to collide with an item
         highlightEntity(null);
         for(Entity e : pickableItems){
@@ -152,6 +170,9 @@ public class PlayerInputState extends BaseAppState{
                 highlightEntity(e);
                 break;
             }
+        }
+        if(highlightedId == null && inSleepZone){
+            gameUI.setCursorText("Go to sleep?");
         }
     }
     
@@ -201,6 +222,28 @@ public class PlayerInputState extends BaseAppState{
         if(e != null){
             //e is a mob
             getState(DialogueState.class).startConvo(highlightedId);
+            return;
+        }
+        //lastly check if we are in a sleep zone
+        if(inSleepZone){
+            //open dialogue menu to go to sleep
+            DialogueMenu dialogue = menus.getMenu(Menus.DIALOGUE_UI_MENU);
+            dialogue.setCharacterName("");
+            dialogue.setMessage("Would you like to go to sleep?");
+            dialogue.setActions(new Action("Sleep"){
+                @Override
+                public void execute(Button button) {
+                    GarbageShopApp app = (GarbageShopApp)getApplication();
+                    app.sleep();
+                    menus.setNextMenu(Menus.GAME_UI_MENU);
+                }
+            }, new Action("Stay Awake"){
+                @Override
+                public void execute(Button button) {
+                    menus.setNextMenu(Menus.GAME_UI_MENU);
+                }
+            });
+            menus.setNextMenu(Menus.DIALOGUE_UI_MENU);
         }
     }
     

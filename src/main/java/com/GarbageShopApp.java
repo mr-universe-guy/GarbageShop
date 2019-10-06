@@ -160,7 +160,7 @@ public class GarbageShopApp extends SimpleApplication{
         System.out.println("Current time is "+hour);
     }
     
-    private void sleep(){
+    public void sleep(){
         //TODO: fade to black first
         for(DayListener listener : dayListeners){
             listener.nextDay();

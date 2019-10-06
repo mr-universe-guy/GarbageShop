@@ -32,9 +32,14 @@ public class SceneState extends BaseAppState{
         scene.addCollisionObject(new StaticGridObject(new Coordinate(0,12), new Coordinate(10,8)));
         scene.addCollisionObject(new StaticGridObject(new Coordinate(16,0), new Coordinate(7,4)));
         scene.addCollisionObject(new StaticGridObject(new Coordinate(16,6), new Coordinate(7,14)));
+        scene.addCollisionObject(new StaticGridObject(new Coordinate(-1,10), new Coordinate(1,2)));
+        scene.addCollisionObject(new StaticGridObject(new Coordinate(23,4), new Coordinate(1,2)));
         //set some item spawners
         scene.addItemSpawnArea(new StaticGridObject(new Coordinate(3,10), new Coordinate(6,2)));
         scene.addItemSpawnArea(new StaticGridObject(new Coordinate(17,4), new Coordinate(4,2)));
+        //add some sleep zones
+        scene.addSleepZone(new StaticGridObject(new Coordinate(0,10), new Coordinate(1,2)));
+        
         //build map visuals
         AssetManager am = app.getAssetManager();
         Spatial dumpster = am.loadModel("models/dumpster.gltf");

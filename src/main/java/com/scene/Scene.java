@@ -16,6 +16,7 @@ import java.util.List;
 public class Scene {
     private final List<GridObject> collisionObjects = new ArrayList<>();
     private final List<GridObject> itemSpawners = new ArrayList<>();
+    private final List<GridObject> sleepZones = new ArrayList<>();
     private final Vector2f northSpawn, southSpawn;
     private final float spawnRadius = 2.5f;
 
@@ -46,6 +47,18 @@ public class Scene {
     
     public List<GridObject> getItemSpawners(){
         return itemSpawners;
+    }
+    
+    public boolean addSleepZone(GridObject sleepZone){
+        return sleepZones.add(sleepZone);
+    }
+    
+    public boolean removeSleepZone(GridObject sleepZone){
+        return sleepZones.remove(sleepZone);
+    }
+    
+    public List<GridObject> getSleepZones(){
+        return sleepZones;
     }
 
     public Vector2f getNorthSpawn() {
