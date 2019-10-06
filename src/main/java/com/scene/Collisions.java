@@ -71,4 +71,8 @@ public class Collisions {
         //now do a regular box check
         return pointInBox(localPoint, boxExtents.negate(), boxExtents);
     }
+    
+    public static boolean pointInCircle(Vector2f point, Vector2f circlePos, float circleRadius){
+        return point.distanceSquared(circlePos) < circleRadius*circleRadius;
+    }
 }

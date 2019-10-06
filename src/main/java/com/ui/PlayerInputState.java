@@ -31,6 +31,8 @@ import com.unit.Item;
 import com.unit.ItemComponent;
 import com.unit.ItemState;
 import com.unit.Items;
+import com.unit.MobComponent;
+import com.unit.NameComponent;
 import com.unit.PositionComponent;
 
 /**
@@ -39,7 +41,7 @@ import com.unit.PositionComponent;
  */
 public class PlayerInputState extends BaseAppState{
     private EntityData ed;
-    private EntitySet pickableItems;
+    private EntitySet pickableItems, pickableMobs;
     private WatchedEntity player;
     private Vector2f movement = new Vector2f(0,0);
     private boolean needUpdate = false;
@@ -93,7 +95,8 @@ public class PlayerInputState extends BaseAppState{
         im.addStateListener(state, Inputs.INTERACT, Inputs.INVENTORY, Inputs.SPRINT);
         inputManager = app.getInputManager();
         player = ed.watchEntity(app.getPlayerId(), PositionComponent.class);
-        pickableItems = ed.getEntities(ItemComponent.class, PositionComponent.class);
+        pickableItems = ed.getEntities(ItemComponent.class, NameComponent.class, PositionComponent.class);
+        pickableMobs = ed.getEntities(MobComponent.class, NameComponent.class, PositionComponent.class);
         menus = getState(MenuDirectorState.class);
         gameUI = menus.getMenu(Menus.GAME_UI_MENU);
     }
@@ -118,21 +121,35 @@ public class PlayerInputState extends BaseAppState{
         }
         player.applyChanges();
         pickableItems.applyChanges();
+        pickableMobs.applyChanges();
         //find any items within reach distance of player and see if our mouse is
         //hovering over them, if so highlight them?
         Vector2f playerPos = player.get(PositionComponent.class).getPosition();
         Vector3f playerScreenPos = cam.getScreenCoordinates(Vectors.vec2ToVec3(playerPos));
         Vector3f cursorWorldPos =
                 cam.getWorldCoordinates(inputManager.getCursorPosition(), playerScreenPos.z);
+        Vector2f cursor = Vectors.vec3ToVec2(cursorWorldPos);
         //try to collide with an item
         highlightEntity(null);
         for(Entity e : pickableItems){
             PositionComponent pos = e.get(PositionComponent.class);
             Item item = Items.ITEMMAP.get(e.get(ItemComponent.class).getItemKey());
-            if(Collisions.pointInRotatedBox(Vectors.vec3ToVec2(cursorWorldPos),
+            if(Collisions.pointInRotatedBox(cursor,
                     pos.getPosition(), new Vector2f(item.getWidth()*0.1f,
                             item.getHeight()*0.1f), pos.getRotation())){
-                highlightEntity(e.getId());
+                highlightEntity(e);
+                break;
+            }
+        }
+        //also try to pick people to talk to
+        for(Entity e : pickableMobs){
+            if(e.getId().equals(player.getId())){
+                continue;
+            }
+            Vector2f pos = e.get(PositionComponent.class).getPosition();
+            float size = e.get(MobComponent.class).getRadius();
+            if(Collisions.pointInCircle(cursor, pos, size)){
+                highlightEntity(e);
                 break;
             }
         }
@@ -143,17 +160,14 @@ public class PlayerInputState extends BaseAppState{
      * or an npc
      * @param id 
      */
-    private void highlightEntity(EntityId id){
-        highlightedId = id;
-        if(id == null){
+    private void highlightEntity(Entity e){
+        if(e == null){
+            highlightedId = null;
             gameUI.setCursorText("");
+            return;
         }
-        Entity e = pickableItems.getEntity(id);
-        if(e != null){
-            //highlighted entity is an item
-            Item item = Items.ITEMMAP.get(e.get(ItemComponent.class).getItemKey());
-            gameUI.setCursorText(item.getItemName());
-        }
+        highlightedId = e.getId();
+        gameUI.setCursorText(e.get(NameComponent.class).getName());
     }
     
     private void interact(){
@@ -181,6 +195,11 @@ public class PlayerInputState extends BaseAppState{
             ed.removeEntity(highlightedId);
             //open the inventory screen
             menus.setNextMenu(Menus.INVENTORY_UI_MENU);
+            return;
+        }
+        e = pickableMobs.getEntity(highlightedId);
+        if(e != null){
+            //e is a mob
         }
     }
     

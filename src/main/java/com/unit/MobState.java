@@ -138,7 +138,8 @@ public class MobState extends BaseAppState implements TimeListener{
             dir = new Vector2f(0,-1);
         }
         DriverComponent driver = new DriverComponent(dir);
-        ed.setComponents(id, pos, mob, driver);
+        NameComponent name = new NameComponent(id.toString());
+        ed.setComponents(id, pos, mob, driver, name);
         return id;
     }
 }

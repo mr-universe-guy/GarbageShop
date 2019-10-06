@@ -116,7 +116,8 @@ public class ItemState extends BaseAppState implements DayListener{
         ed.setComponents(ed.createEntity(),
                     new PositionComponent(pos, rot),
                     new ItemComponent(item.getItemName()),
-                    new VisualComponent(item.getAssetPath())
+                    new VisualComponent(item.getAssetPath()),
+                    new NameComponent(item.getItemName())
             );
     }
 }
