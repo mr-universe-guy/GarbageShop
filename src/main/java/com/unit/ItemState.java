@@ -11,6 +11,7 @@ import com.entity.DataState;
 import com.jme3.app.Application;
 import com.jme3.app.state.BaseAppState;
 import com.jme3.math.FastMath;
+import com.jme3.math.Vector2f;
 import com.scene.Collisions;
 import com.scene.Coordinate;
 import com.scene.Scene;
@@ -106,12 +107,16 @@ public class ItemState extends BaseAppState implements DayListener{
             float posX = min.x+(random.nextFloat()*rangeX);
             float posY = min.y+(random.nextFloat()*rangeY);
             float rot = random.nextFloat()*FastMath.TWO_PI;
-            ed.setComponents(ed.createEntity(),
-                    new PositionComponent(posX, posY, rot),
-                    new ItemComponent(item.getItemName()),
-                    new VisualComponent(item.getAssetPath())
-            );
+            spawnItem(item, new Vector2f(posX, posY), rot);
         }
     }
     
+    public void spawnItem(Item item, Vector2f pos, float rot){
+        System.out.println("Spawning item "+item.getItemName()+" "+pos);
+        ed.setComponents(ed.createEntity(),
+                    new PositionComponent(pos, rot),
+                    new ItemComponent(item.getItemName()),
+                    new VisualComponent(item.getAssetPath())
+            );
+    }
 }

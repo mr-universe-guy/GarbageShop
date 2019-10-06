@@ -29,6 +29,7 @@ import com.simsilica.lemur.input.StateFunctionListener;
 import com.unit.DriverComponent;
 import com.unit.Item;
 import com.unit.ItemComponent;
+import com.unit.ItemState;
 import com.unit.Items;
 import com.unit.PositionComponent;
 
@@ -149,8 +150,17 @@ public class PlayerInputState extends BaseAppState{
     private void interact(){
         GarbageShopApp app = (GarbageShopApp)getApplication();
         Item heldItem = app.getHeldItem();
+        System.out.println("Interacting");
         if(heldItem != null){
             //we're holding something so this does new stuff
+            if(highlightedId == null){
+                //set our item down
+                Vector2f cPos = getApplication().getInputManager().getCursorPosition();
+                Vector3f pos = cam.getWorldCoordinates(cPos, cam.distanceToNearPlane(Vector3f.ZERO));
+                getState(ItemState.class).spawnItem(heldItem, Vectors.vec3ToVec2(pos), 0);
+                app.setHeldItem(null);
+                menus.setNextMenu(Menus.GAME_UI_MENU);
+            }
             return;
         }
         Entity e = pickableItems.getEntity(highlightedId);
