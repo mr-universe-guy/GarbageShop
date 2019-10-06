@@ -41,11 +41,6 @@ public class SceneState extends BaseAppState{
         
         //build map visuals
         AssetManager am = app.getAssetManager();
-//        Spatial dumpster = am.loadModel("models/dumpster.gltf");
-//        Material mat = new Material(am, "Common/MatDefs/Misc/Unshaded.j3md");
-//        dumpster.setMaterial(mat);
-//        dumpster.setLocalTranslation(1, 11, 0);
-//        mapNode.attachChild(dumpster);
         
         Spatial buildingA = am.loadModel("object/BuildingAObject.j3o");
         mapNode.attachChild(buildingA);

@@ -7,6 +7,7 @@ package com;
 
 import com.entity.DataState;
 import com.jme3.app.SimpleApplication;
+import com.jme3.math.ColorRGBA;
 import com.mrugames.menumonkey.MenuDirectorState;
 import com.scene.CollisionDebugState;
 import com.scene.SceneState;
@@ -28,6 +29,7 @@ import com.ui.Inputs;
 import com.ui.InventoryMenu;
 import com.ui.Menus;
 import com.ui.PlayerInputState;
+import com.unit.ColorComponent;
 import com.unit.DriverComponent;
 import com.unit.HeldItemListener;
 import com.unit.Inventory;
@@ -121,7 +123,8 @@ public class GarbageShopApp extends SimpleApplication{
                 new MobComponent(1f,0.3f),
                 new DriverComponent(0f,0f),
                 new PositionComponent(3f,11f,0),
-                new VisualComponent("object/CharacterObject.j3o")
+                new VisualComponent("object/CharacterObject.j3o"),
+                new ColorComponent(ColorRGBA.Brown)
         );
     }
 

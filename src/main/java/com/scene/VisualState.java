@@ -11,6 +11,7 @@ import com.jme3.app.Application;
 import com.jme3.app.state.BaseAppState;
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
@@ -21,6 +22,7 @@ import com.simsilica.es.Entity;
 import com.simsilica.es.EntityData;
 import com.simsilica.es.EntityId;
 import com.simsilica.es.EntitySet;
+import com.unit.ColorComponent;
 import com.unit.PositionComponent;
 import java.util.HashMap;
 import java.util.Map;
@@ -96,11 +98,27 @@ public class VisualState extends BaseAppState{
         Spatial spat = am.loadModel(asset);
         assetMap.put(id, spat);
         //for now we're applying a temp material
+        ColorComponent col = ed.getComponent(id, ColorComponent.class);
+        if(col != null){
+            ColorRGBA color = col.getColor();
+            if(spat instanceof Geometry){
+                colorGeometry((Geometry)spat, color);
+            } else if(spat instanceof Node){
+                for(Geometry geo : ((Node)spat).descendantMatches(Geometry.class)){
+                    colorGeometry(geo, color);
+                }
+            }
+        }
         if(!asset.endsWith("j3o")){
             spat.setMaterial(mat);
         }
         visualNode.attachChild(spat);
         translateAsset(spat, position, rot);
+    }
+    
+    private void colorGeometry(Geometry geo, ColorRGBA color){
+        Material mat = geo.getMaterial();
+        mat.setColor("Color", color);
     }
     
     private void translateAsset(EntityId id, Vector2f position, float rot){

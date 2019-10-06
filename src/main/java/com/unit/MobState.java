@@ -10,6 +10,7 @@ import com.TimeListener;
 import com.entity.DataState;
 import com.jme3.app.Application;
 import com.jme3.app.state.BaseAppState;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
 import com.scene.Scene;
 import com.scene.SceneState;
@@ -139,6 +140,7 @@ public class MobState extends BaseAppState implements TimeListener{
         }
         DriverComponent driver = new DriverComponent(dir);
         NameComponent name = new NameComponent(id.toString());
+        ColorComponent color = new ColorComponent(ColorRGBA.randomColor());
         if(random.nextFloat() <= 0.2f){
             //get random trade
             Item randomItem = Items.getRandomItem();
@@ -147,7 +149,7 @@ public class MobState extends BaseAppState implements TimeListener{
             ed.setComponent(id, trade);
         }
         VisualComponent vis = new VisualComponent("object/CharacterObject.j3o");
-        ed.setComponents(id, pos, mob, driver, name, vis);
+        ed.setComponents(id, pos, mob, driver, name, vis, color);
         return id;
     }
 }
