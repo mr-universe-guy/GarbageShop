@@ -14,6 +14,7 @@ import com.jme3.math.Vector2f;
 import com.scene.Scene;
 import com.scene.SceneState;
 import com.scene.Vectors;
+import com.scene.VisualComponent;
 import com.simsilica.es.Entity;
 import com.simsilica.es.EntityData;
 import com.simsilica.es.EntityId;
@@ -145,7 +146,8 @@ public class MobState extends BaseAppState implements TimeListener{
                     randomItem.getItemName(), randomItem.getTags(), false);
             ed.setComponent(id, trade);
         }
-        ed.setComponents(id, pos, mob, driver, name);
+        VisualComponent vis = new VisualComponent("models/Character.gltf");
+        ed.setComponents(id, pos, mob, driver, name, vis);
         return id;
     }
 }

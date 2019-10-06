@@ -14,6 +14,7 @@ import com.jme3.material.Material;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.simsilica.es.Entity;
@@ -53,6 +54,10 @@ public class VisualState extends BaseAppState{
         GarbageShopApp app = (GarbageShopApp)getApplication();
         assets = ed.getEntities(VisualComponent.class, PositionComponent.class);
         app.getRootNode().attachChild(visualNode);
+        assets.applyChanges();
+        for(Entity e : assets){
+            loadAsset(e);
+        }
     }
 
     @Override
