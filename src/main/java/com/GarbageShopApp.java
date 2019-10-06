@@ -20,6 +20,8 @@ import com.simsilica.lemur.anim.Tween;
 import com.simsilica.lemur.anim.Tweens;
 import com.simsilica.lemur.input.InputMapper;
 import com.ui.CameraState;
+import com.ui.DialogueMenu;
+import com.ui.DialogueState;
 import com.ui.GamePlayMenu;
 import com.ui.Inputs;
 import com.ui.InventoryMenu;
@@ -71,6 +73,7 @@ public class GarbageShopApp extends SimpleApplication{
         Inputs.registerDefaultInput(inputMapper);
         MenuDirectorState menus = new MenuDirectorState();
         menus.registerMenu(Menus.INVENTORY_UI_MENU, new InventoryMenu(playerInventory));
+        menus.registerMenu(Menus.DIALOGUE_UI_MENU, new DialogueMenu());
         menus.registerMenu(Menus.GAME_UI_MENU, new GamePlayMenu());
         menus.setNextMenu(Menus.GAME_UI_MENU);
         
@@ -85,7 +88,8 @@ public class GarbageShopApp extends SimpleApplication{
                 new CollisionDebugState(),
                 new PlayerInputState(),
                 new CameraState(),
-                menus
+                menus,
+                new DialogueState()
         );
         //finally start a new day!
         Tween checkStates = new AbstractTween(0){

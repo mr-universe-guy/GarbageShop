@@ -200,6 +200,7 @@ public class PlayerInputState extends BaseAppState{
         e = pickableMobs.getEntity(highlightedId);
         if(e != null){
             //e is a mob
+            getState(DialogueState.class).startConvo(highlightedId);
         }
     }
     
