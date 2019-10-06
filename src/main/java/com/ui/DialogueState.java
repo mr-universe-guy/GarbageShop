@@ -29,7 +29,7 @@ public class DialogueState extends BaseAppState{
     private final Action closeAction = new Action("leave"){
         @Override
         public void execute(Button button) {
-            closeConvo();ddd
+            closeConvo();
         }
     };
 
